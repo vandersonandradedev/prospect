@@ -73,29 +73,14 @@
   ],
   "leads": [],
   "jobs": [],
-  "suppressionList": [
-    {
-      "id": "sup-1793037095716",
-      "identifier": "(11) 94444-3333",
-      "type": "PHONE",
-      "reason": "Solicitou exclusão",
-      "suppressedAt": "2026-10-26T17:51:35.716Z"
-    }
-  ],
+  "suppressionList": [],
   "auditLogs": [
-    {
-      "id": "log-1793037095716",
-      "action": "SUPPRESSION_ADDED",
-      "resource": "SUPPRESSION",
-      "details": "PHONE: (11) 94444-3333 adicionado à lista de supressão. Motivo: Solicitou exclusão",
-      "timestamp": "2026-10-26T17:51:35.716Z"
-    },
     {
       "id": "log-init",
       "action": "SYSTEM_INITIALIZED",
       "resource": "DATABASE",
-      "details": "Banco de dados operacional inicializado.",
-      "timestamp": "2026-10-26T17:51:35.710Z"
+      "details": "Banco de dados operacional inicializado para a Vision Solutions.",
+      "timestamp": "2026-10-26T15:00:00.000Z"
     }
   ]
 }
