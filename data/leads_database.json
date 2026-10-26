@@ -75,6 +75,20 @@
   "jobs": [],
   "suppressionList": [
     {
+      "id": "sup-1793045093895",
+      "identifier": "(11) 94444-3333",
+      "type": "PHONE",
+      "reason": "Solicitou exclusão",
+      "suppressedAt": "2026-10-26T20:04:53.895Z"
+    },
+    {
+      "id": "sup-1793044724106",
+      "identifier": "(11) 94444-3333",
+      "type": "PHONE",
+      "reason": "Solicitou exclusão",
+      "suppressedAt": "2026-10-26T19:58:44.106Z"
+    },
+    {
       "id": "sup-1793042740430",
       "identifier": "(11) 94444-3333",
       "type": "PHONE",
@@ -83,6 +97,20 @@
     }
   ],
   "auditLogs": [
+    {
+      "id": "log-1793045093895",
+      "action": "SUPPRESSION_ADDED",
+      "resource": "SUPPRESSION",
+      "details": "PHONE: (11) 94444-3333 adicionado à lista de supressão. Motivo: Solicitou exclusão",
+      "timestamp": "2026-10-26T20:04:53.895Z"
+    },
+    {
+      "id": "log-1793044724106",
+      "action": "SUPPRESSION_ADDED",
+      "resource": "SUPPRESSION",
+      "details": "PHONE: (11) 94444-3333 adicionado à lista de supressão. Motivo: Solicitou exclusão",
+      "timestamp": "2026-10-26T19:58:44.106Z"
+    },
     {
       "id": "log-1793042740430",
       "action": "SUPPRESSION_ADDED",

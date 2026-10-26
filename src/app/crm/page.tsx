@@ -123,13 +123,18 @@ export default function CrmKanbanPage() {
                 <div className={`p-3 border-b-2 bg-white rounded-t-xl flex items-center justify-between ${stg.headerColor}`}>
                   <span className="font-bold text-xs">{stg.label}</span>
                   <span className="px-2 py-0.5 rounded-full text-[11px] font-bold bg-slate-100 text-slate-700">
-                    {stageLeads.length}
+                    {loading ? '…' : stageLeads.length}
                   </span>
                 </div>
 
                 {/* Stage Cards */}
                 <div className="flex-1 p-2 space-y-2 overflow-y-auto">
-                  {stageLeads.length === 0 ? (
+                  {loading ? (
+                    <div className="space-y-2 p-1 animate-pulse">
+                      <div className="h-20 bg-white/70 rounded-lg border border-slate-200" />
+                      <div className="h-20 bg-white/50 rounded-lg border border-slate-200" />
+                    </div>
+                  ) : stageLeads.length === 0 ? (
                     <div className="text-center py-8 text-[11px] text-slate-400">Nenhum lead nesta etapa</div>
                   ) : (
                     stageLeads.map((lead) => (

@@ -106,9 +106,7 @@ export default function JobsPage() {
 
       {/* Tabela de Trabalhos */}
       <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
-        {loading ? (
-          <div className="p-12 text-center text-sm text-slate-500">Carregando histórico de coletas...</div>
-        ) : jobs.length === 0 ? (
+        {!loading && jobs.length === 0 ? (
           <div className="p-12 text-center space-y-3">
             <Radio className="w-10 h-10 text-slate-300 mx-auto" />
             <div className="text-base font-bold text-slate-800">Nenhum trabalho de coleta realizado</div>
@@ -136,7 +134,21 @@ export default function JobsPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 text-sm">
-                {jobs.map((job) => (
+                {loading ? (
+                  [1, 2, 3, 4].map((i) => (
+                    <tr key={i} className="animate-pulse">
+                      <td className="py-3.5 px-4">
+                        <div className="h-4 bg-slate-200 rounded w-40 mb-1.5" />
+                        <div className="h-3 bg-slate-100 rounded w-24" />
+                      </td>
+                      <td className="py-3.5 px-4"><div className="h-5 bg-slate-100 rounded w-16" /></td>
+                      <td className="py-3.5 px-4"><div className="h-4 bg-slate-100 rounded w-28" /></td>
+                      <td className="py-3.5 px-4 text-center"><div className="h-4 bg-slate-100 rounded w-16 mx-auto" /></td>
+                      <td className="py-3.5 px-4"><div className="h-5 bg-slate-100 rounded w-20" /></td>
+                      <td className="py-3.5 px-4"><div className="h-4 bg-slate-100 rounded w-24" /></td>
+                    </tr>
+                  ))
+                ) : jobs.map((job) => (
                   <tr key={job.id} className="hover:bg-slate-50/60 transition-colors">
                     <td className="py-3.5 px-4">
                       <div className="font-bold text-slate-900">{job.searchQuery}</div>

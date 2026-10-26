@@ -172,9 +172,7 @@ export default function LeadsPage() {
 
       {/* Tabela de Leads */}
       <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
-        {loading ? (
-          <div className="p-12 text-center text-sm text-slate-500">Carregando leads reais...</div>
-        ) : leads.length === 0 ? (
+        {!loading && leads.length === 0 ? (
           <div className="p-12 text-center space-y-3">
             <Building2 className="w-10 h-10 text-slate-300 mx-auto" />
             <div className="text-base font-bold text-slate-800">Nenhum lead encontrado</div>
@@ -204,7 +202,23 @@ export default function LeadsPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 text-sm">
-                {leads.map((lead) => (
+                {loading ? (
+                  [1, 2, 3, 4, 5, 6].map((i) => (
+                    <tr key={i} className="animate-pulse">
+                      <td className="py-3.5 px-4">
+                        <div className="h-4 bg-slate-200 rounded w-36 mb-1.5" />
+                        <div className="h-3 bg-slate-100 rounded w-24" />
+                      </td>
+                      <td className="py-3.5 px-4"><div className="h-5 bg-slate-100 rounded w-16" /></td>
+                      <td className="py-3.5 px-4"><div className="h-4 bg-slate-100 rounded w-20" /></td>
+                      <td className="py-3.5 px-4"><div className="h-4 bg-slate-100 rounded w-28" /></td>
+                      <td className="py-3.5 px-4 text-center"><div className="h-5 bg-slate-100 rounded w-8 mx-auto" /></td>
+                      <td className="py-3.5 px-4"><div className="h-5 bg-slate-100 rounded w-20" /></td>
+                      <td className="py-3.5 px-4"><div className="h-4 bg-slate-100 rounded w-16" /></td>
+                      <td className="py-3.5 px-4 text-right"><div className="h-7 bg-slate-100 rounded w-16 ml-auto" /></td>
+                    </tr>
+                  ))
+                ) : leads.map((lead) => (
                   <tr key={lead.id} className="hover:bg-slate-50/60 transition-colors">
                     {/* Empresa / Categoria */}
                     <td className="py-3.5 px-4">

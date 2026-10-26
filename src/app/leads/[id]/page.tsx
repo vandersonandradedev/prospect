@@ -162,7 +162,20 @@ export default function LeadDetailPage() {
   };
 
   if (loading) {
-    return <div className="p-12 text-center text-sm text-slate-500">Carregando detalhes do lead...</div>;
+    return (
+      <div className="p-8 space-y-6 max-w-7xl mx-auto w-full animate-pulse">
+        <div className="h-8 bg-slate-200 rounded w-36" />
+        <div className="bg-white border border-slate-200 rounded-xl p-6 h-40 space-y-4">
+          <div className="h-6 bg-slate-200 rounded w-1/3" />
+          <div className="h-4 bg-slate-100 rounded w-1/4" />
+          <div className="h-4 bg-slate-100 rounded w-1/2" />
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 bg-white border border-slate-200 rounded-xl p-6 h-96" />
+          <div className="bg-white border border-slate-200 rounded-xl p-6 h-96" />
+        </div>
+      </div>
+    );
   }
 
   if (!lead) {

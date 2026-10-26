@@ -69,7 +69,18 @@ export default function AgendaPage() {
 
       <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
         {loading ? (
-          <div className="p-12 text-center text-sm text-slate-500">Carregando linha do tempo...</div>
+          <div className="relative pl-6 border-l-2 border-slate-100 space-y-6 animate-pulse">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="relative">
+                <div className="absolute -left-[31px] top-1 w-6 h-6 rounded-full bg-slate-200 border-2 border-slate-300" />
+                <div className="p-4 bg-slate-50 rounded-xl border border-slate-200/80 space-y-2">
+                  <div className="h-4 bg-slate-200 rounded w-1/3 mb-2" />
+                  <div className="h-4 bg-slate-200 rounded w-2/3" />
+                  <div className="h-3 bg-slate-100 rounded w-1/4 mt-2" />
+                </div>
+              </div>
+            ))}
+          </div>
         ) : allActivities.length === 0 ? (
           <div className="p-12 text-center text-sm text-slate-500">
             Nenhuma atividade comercial registrada ainda. Inicie um contato com um lead para gerar histórico.

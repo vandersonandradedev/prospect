@@ -100,24 +100,34 @@ export default function SettingsPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {sources.map((src) => (
-            <div key={src.id} className="p-4 bg-slate-50 rounded-xl border border-slate-200/80 space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="font-bold text-xs text-slate-800">{src.name}</span>
-                <span
-                  className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                    src.available ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
-                  }`}
-                >
-                  {src.available ? 'DISPONÍVEL' : 'OFFLINE'}
-                </span>
+          {loading && sources.length === 0 ? (
+            [1, 2, 3].map((i) => (
+              <div key={i} className="p-4 bg-slate-50 rounded-xl border border-slate-200/80 space-y-2 animate-pulse h-28">
+                <div className="h-4 bg-slate-200 rounded w-1/3" />
+                <div className="h-3 bg-slate-200 rounded w-2/3" />
+                <div className="h-8 bg-slate-100 rounded mt-2" />
               </div>
-              <p className="text-[11px] text-slate-500">{src.description}</p>
-              <div className="text-[11px] font-medium text-slate-700 bg-white p-2 rounded border border-slate-100">
-                {src.message}
+            ))
+          ) : (
+            sources.map((src) => (
+              <div key={src.id} className="p-4 bg-slate-50 rounded-xl border border-slate-200/80 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-xs text-slate-800">{src.name}</span>
+                  <span
+                    className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                      src.available ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
+                    }`}
+                  >
+                    {src.available ? 'DISPONÍVEL' : 'OFFLINE'}
+                  </span>
+                </div>
+                <p className="text-[11px] text-slate-500">{src.description}</p>
+                <div className="text-[11px] font-medium text-slate-700 bg-white p-2 rounded border border-slate-100">
+                  {src.message}
+                </div>
               </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </div>
 
