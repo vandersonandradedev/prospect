@@ -64,11 +64,31 @@ export class OverpassOsmProvider implements BusinessProvider {
 
     // 1. Tentar busca rápida de POIs via Nominatim (responde em < 1s)
     try {
+      const catLower = category.toLowerCase().trim();
       const nomQueries = [
         `${category}, ${city}, ${state}, Brasil`,
         `${category} em ${city}, ${state}`,
         `${category}, ${city}`,
       ];
+
+      if (catLower.includes('dark kitchen')) {
+        nomQueries.push(`restaurante delivery, ${city}, ${state}, Brasil`);
+        nomQueries.push(`lanchonete, ${city}, ${state}, Brasil`);
+      } else if (catLower.includes('software') || catLower.includes('fiscal')) {
+        nomQueries.push(`informatica, ${city}, ${state}, Brasil`);
+        nomQueries.push(`tecnologia, ${city}, ${state}, Brasil`);
+        nomQueries.push(`comercio, ${city}, ${state}, Brasil`);
+      } else if (catLower.includes('oficina') || catLower.includes('mecanic') || catLower.includes('automotivo')) {
+        nomQueries.push(`oficina, ${city}, ${state}, Brasil`);
+        nomQueries.push(`auto pecas, ${city}, ${state}, Brasil`);
+      } else if (catLower.includes('pizz')) {
+        nomQueries.push(`pizzaria, ${city}, ${state}, Brasil`);
+      } else if (catLower.includes('hamburg') || catLower.includes('burger')) {
+        nomQueries.push(`hamburgueria, ${city}, ${state}, Brasil`);
+        nomQueries.push(`lanchonete, ${city}, ${state}, Brasil`);
+      } else if (catLower.includes('acai') || catLower.includes('açaí')) {
+        nomQueries.push(`sorveteria, ${city}, ${state}, Brasil`);
+      }
 
       for (const queryStr of nomQueries) {
         const nomUrl = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
@@ -250,10 +270,8 @@ export class OverpassOsmProvider implements BusinessProvider {
       }
     }
 
-    if (!data) {
-      throw new Error(
-        `Serviços de mapa temporariamente sobrecarregados (${lastError?.message || 'Timeout'}). Tente novamente em alguns segundos.`
-      );
+    if (!data || !data.elements || data.elements.length === 0) {
+      return [];
     }
 
     const elements = data.elements || [];

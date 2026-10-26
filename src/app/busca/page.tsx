@@ -333,6 +333,13 @@ export default function SearchPage() {
             </div>
           </div>
 
+          {result.job?.warningMessage && (
+            <div className="p-3 bg-amber-50 border border-amber-200 text-amber-900 rounded-lg text-xs font-medium flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 text-amber-600 shrink-0" />
+              <span>{result.job.warningMessage}</span>
+            </div>
+          )}
+
           <div className="flex items-center gap-3 pt-2">
             <button
               onClick={() => router.push('/leads')}

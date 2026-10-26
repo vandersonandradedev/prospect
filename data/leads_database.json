@@ -73,6 +73,198 @@
   ],
   "leads": [
     {
+      "id": "lead-1793046889811-r67v6",
+      "name": "Oficina Mecânica do DEQ",
+      "legalName": null,
+      "cnpj": null,
+      "category": "university",
+      "productId": "prod-torqueos",
+      "productName": "TorqueOS",
+      "address": "Rua Pitágoras, Cidade Universitária",
+      "city": "Campinas",
+      "state": "São Paulo",
+      "latitude": -22.8162647,
+      "longitude": -47.0671411,
+      "phone": null,
+      "website": null,
+      "email": null,
+      "rating": null,
+      "reviewsCount": null,
+      "source": "OPENSTREETMAP_OVERPASS",
+      "sourceUrl": "https://www.openstreetmap.org/way/109496255",
+      "sourceExternalId": "osm-way-109496255",
+      "dataConfidence": "LOW",
+      "verificationStatus": "UNVERIFIED",
+      "pipelineStage": "NEW",
+      "priority": "LOW",
+      "score": 10,
+      "scoreFactors": [
+        "Segmento comercial compatível (+10)",
+        "Telefone comercial ausente na consulta original (0)"
+      ],
+      "firstCollectedAt": "2026-10-26T20:34:49.811Z",
+      "lastVerifiedAt": "2026-10-26T20:36:12.305Z",
+      "notes": null,
+      "evidences": [
+        {
+          "id": "ev-1793046889811-1",
+          "category": "ORIGEM_VERIFICADA",
+          "description": "Empresa identificada em consulta na base OPENSTREETMAP_OVERPASS.",
+          "evidenceUrl": "https://www.openstreetmap.org/way/109496255",
+          "detectedAt": "2026-10-26T20:34:49.811Z"
+        }
+      ],
+      "activities": [
+        {
+          "id": "act-1793046889811-1",
+          "leadId": "lead-1793046889811-r67v6",
+          "type": "STATUS_UPDATE",
+          "title": "Lead Ingerido",
+          "description": "Lead cadastrado na base de prospecção via OPENSTREETMAP_OVERPASS.",
+          "createdAt": "2026-10-26T20:34:49.811Z",
+          "operatorName": "Sistema"
+        }
+      ],
+      "stageHistory": [
+        {
+          "id": "sh-1793046889811-1",
+          "fromStage": "NEW",
+          "toStage": "NEW",
+          "reason": "Criação inicial do lead",
+          "changedAt": "2026-10-26T20:34:49.811Z"
+        }
+      ],
+      "aiAnalysis": null
+    },
+    {
+      "id": "lead-1793046889811-mrkmv",
+      "name": "Oficina Mecânica Luis Almeida Junior",
+      "legalName": null,
+      "cnpj": null,
+      "category": "car_repair",
+      "productId": "prod-torqueos",
+      "productName": "TorqueOS",
+      "address": "Avenida do Ipiranga, Ponte Preta",
+      "city": "Campinas",
+      "state": "São Paulo",
+      "latitude": -22.9139726,
+      "longitude": -47.0581665,
+      "phone": "(19) 99211-7898",
+      "website": null,
+      "email": null,
+      "rating": null,
+      "reviewsCount": null,
+      "source": "OPENSTREETMAP_OVERPASS",
+      "sourceUrl": "https://www.openstreetmap.org/node/2375841133",
+      "sourceExternalId": "osm-node-2375841133",
+      "dataConfidence": "MEDIUM",
+      "verificationStatus": "UNVERIFIED",
+      "pipelineStage": "NEW",
+      "priority": "MEDIUM",
+      "score": 60,
+      "scoreFactors": [
+        "Segmento automotivo com forte necessidade de Ordem de Serviço (+30)",
+        "Telefone comercial público disponível para contato (+30)"
+      ],
+      "firstCollectedAt": "2026-10-26T20:34:49.811Z",
+      "lastVerifiedAt": "2026-10-26T20:36:12.305Z",
+      "notes": null,
+      "evidences": [
+        {
+          "id": "ev-1793046889811-1",
+          "category": "ORIGEM_VERIFICADA",
+          "description": "Empresa identificada em consulta na base OPENSTREETMAP_OVERPASS.",
+          "evidenceUrl": "https://www.openstreetmap.org/node/2375841133",
+          "detectedAt": "2026-10-26T20:34:49.811Z"
+        }
+      ],
+      "activities": [
+        {
+          "id": "act-1793046889811-1",
+          "leadId": "lead-1793046889811-mrkmv",
+          "type": "STATUS_UPDATE",
+          "title": "Lead Ingerido",
+          "description": "Lead cadastrado na base de prospecção via OPENSTREETMAP_OVERPASS.",
+          "createdAt": "2026-10-26T20:34:49.811Z",
+          "operatorName": "Sistema"
+        }
+      ],
+      "stageHistory": [
+        {
+          "id": "sh-1793046889811-1",
+          "fromStage": "NEW",
+          "toStage": "NEW",
+          "reason": "Criação inicial do lead",
+          "changedAt": "2026-10-26T20:34:49.811Z"
+        }
+      ],
+      "aiAnalysis": null
+    },
+    {
+      "id": "lead-1793046889811-v3lh1",
+      "name": "GarageCar Oficina Mecânica",
+      "legalName": null,
+      "cnpj": null,
+      "category": "car_repair",
+      "productId": "prod-torqueos",
+      "productName": "TorqueOS",
+      "address": "Rua Doutor Miguel Penteado, 577, Guanabara",
+      "city": "Campinas",
+      "state": "São Paulo",
+      "latitude": -22.8883758,
+      "longitude": -47.0734287,
+      "phone": "(19) 3368-9381",
+      "website": null,
+      "email": null,
+      "rating": null,
+      "reviewsCount": null,
+      "source": "OPENSTREETMAP_OVERPASS",
+      "sourceUrl": "https://www.openstreetmap.org/node/8476116594",
+      "sourceExternalId": "osm-node-8476116594",
+      "dataConfidence": "MEDIUM",
+      "verificationStatus": "UNVERIFIED",
+      "pipelineStage": "NEW",
+      "priority": "MEDIUM",
+      "score": 60,
+      "scoreFactors": [
+        "Segmento automotivo com forte necessidade de Ordem de Serviço (+30)",
+        "Telefone comercial público disponível para contato (+30)"
+      ],
+      "firstCollectedAt": "2026-10-26T20:34:49.811Z",
+      "lastVerifiedAt": "2026-10-26T20:36:12.305Z",
+      "notes": null,
+      "evidences": [
+        {
+          "id": "ev-1793046889811-1",
+          "category": "ORIGEM_VERIFICADA",
+          "description": "Empresa identificada em consulta na base OPENSTREETMAP_OVERPASS.",
+          "evidenceUrl": "https://www.openstreetmap.org/node/8476116594",
+          "detectedAt": "2026-10-26T20:34:49.811Z"
+        }
+      ],
+      "activities": [
+        {
+          "id": "act-1793046889811-1",
+          "leadId": "lead-1793046889811-v3lh1",
+          "type": "STATUS_UPDATE",
+          "title": "Lead Ingerido",
+          "description": "Lead cadastrado na base de prospecção via OPENSTREETMAP_OVERPASS.",
+          "createdAt": "2026-10-26T20:34:49.811Z",
+          "operatorName": "Sistema"
+        }
+      ],
+      "stageHistory": [
+        {
+          "id": "sh-1793046889811-1",
+          "fromStage": "NEW",
+          "toStage": "NEW",
+          "reason": "Criação inicial do lead",
+          "changedAt": "2026-10-26T20:34:49.811Z"
+        }
+      ],
+      "aiAnalysis": null
+    },
+    {
       "id": "lead-1793046054951-mcy1n",
       "name": "Brabus Hamburgueria",
       "legalName": null,
@@ -103,7 +295,7 @@
         "Telefone comercial ausente na consulta original (0)"
       ],
       "firstCollectedAt": "2026-10-26T20:20:54.951Z",
-      "lastVerifiedAt": "2026-10-26T20:21:06.769Z",
+      "lastVerifiedAt": "2026-10-26T20:36:12.249Z",
       "notes": null,
       "evidences": [
         {
@@ -167,7 +359,7 @@
         "Telefone comercial público disponível para contato (+30)"
       ],
       "firstCollectedAt": "2026-10-26T20:20:54.951Z",
-      "lastVerifiedAt": "2026-10-26T20:21:06.769Z",
+      "lastVerifiedAt": "2026-10-26T20:36:12.249Z",
       "notes": null,
       "evidences": [
         {
@@ -232,7 +424,7 @@
         "Possui presença digital / site próprio (+20)"
       ],
       "firstCollectedAt": "2026-10-26T20:20:54.951Z",
-      "lastVerifiedAt": "2026-10-26T20:21:06.769Z",
+      "lastVerifiedAt": "2026-10-26T20:36:12.249Z",
       "notes": null,
       "evidences": [
         {
@@ -297,7 +489,7 @@
         "Possui presença digital / site próprio (+20)"
       ],
       "firstCollectedAt": "2026-10-26T20:20:54.951Z",
-      "lastVerifiedAt": "2026-10-26T20:21:06.769Z",
+      "lastVerifiedAt": "2026-10-26T20:36:12.249Z",
       "notes": null,
       "evidences": [
         {
@@ -361,7 +553,7 @@
         "Telefone comercial público disponível para contato (+30)"
       ],
       "firstCollectedAt": "2026-10-26T20:20:54.951Z",
-      "lastVerifiedAt": "2026-10-26T20:21:06.769Z",
+      "lastVerifiedAt": "2026-10-26T20:36:12.249Z",
       "notes": null,
       "evidences": [
         {
@@ -396,6 +588,70 @@
     }
   ],
   "jobs": [
+    {
+      "id": "job-1793046972257-tlfy",
+      "provider": "OPENSTREETMAP_OVERPASS",
+      "searchQuery": "Oficina Mecânica em Campinas, SP",
+      "targetProduct": "TorqueOS",
+      "targetCategory": "Oficina Mecânica",
+      "targetCity": "Campinas",
+      "targetState": "SP",
+      "maxResults": 5,
+      "status": "COMPLETED",
+      "itemsFound": 3,
+      "itemsImported": 0,
+      "startedAt": "2026-10-26T20:36:12.257Z",
+      "warningMessage": "Provedor GMAPS_SCRAPER_KIT offline. Busca realizada via OpenStreetMap.",
+      "finishedAt": "2026-10-26T20:36:12.310Z"
+    },
+    {
+      "id": "job-1793046972068-zekx",
+      "provider": "OPENSTREETMAP_OVERPASS",
+      "searchQuery": "Hamburgueria em São Paulo, SP",
+      "targetProduct": "MesaGo",
+      "targetCategory": "Hamburgueria",
+      "targetCity": "São Paulo",
+      "targetState": "SP",
+      "maxResults": 5,
+      "status": "COMPLETED",
+      "itemsFound": 5,
+      "itemsImported": 0,
+      "startedAt": "2026-10-26T20:36:12.068Z",
+      "warningMessage": null,
+      "finishedAt": "2026-10-26T20:36:12.253Z"
+    },
+    {
+      "id": "job-1793046889479-re6h",
+      "provider": "OPENSTREETMAP_OVERPASS",
+      "searchQuery": "Oficina Mecânica em Campinas, SP",
+      "targetProduct": "TorqueOS",
+      "targetCategory": "Oficina Mecânica",
+      "targetCity": "Campinas",
+      "targetState": "SP",
+      "maxResults": 5,
+      "status": "COMPLETED",
+      "itemsFound": 3,
+      "itemsImported": 3,
+      "startedAt": "2026-10-26T20:34:49.479Z",
+      "warningMessage": "Provedor GMAPS_SCRAPER_KIT offline. Busca realizada via OpenStreetMap.",
+      "finishedAt": "2026-10-26T20:34:49.817Z"
+    },
+    {
+      "id": "job-1793046889240-v1pt",
+      "provider": "OPENSTREETMAP_OVERPASS",
+      "searchQuery": "Hamburgueria em São Paulo, SP",
+      "targetProduct": "MesaGo",
+      "targetCategory": "Hamburgueria",
+      "targetCity": "São Paulo",
+      "targetState": "SP",
+      "maxResults": 5,
+      "status": "COMPLETED",
+      "itemsFound": 5,
+      "itemsImported": 0,
+      "startedAt": "2026-10-26T20:34:49.240Z",
+      "warningMessage": null,
+      "finishedAt": "2026-10-26T20:34:49.476Z"
+    },
     {
       "id": "job-1793046066431-138m",
       "provider": "OPENSTREETMAP_OVERPASS",
@@ -461,6 +717,20 @@
   ],
   "suppressionList": [
     {
+      "id": "sup-1793046972048",
+      "identifier": "(11) 94444-3333",
+      "type": "PHONE",
+      "reason": "Solicitou exclusão",
+      "suppressedAt": "2026-10-26T20:36:12.048Z"
+    },
+    {
+      "id": "sup-1793046889181",
+      "identifier": "(11) 94444-3333",
+      "type": "PHONE",
+      "reason": "Solicitou exclusão",
+      "suppressedAt": "2026-10-26T20:34:49.181Z"
+    },
+    {
       "id": "sup-1793046066382",
       "identifier": "(11) 94444-3333",
       "type": "PHONE",
@@ -490,6 +760,84 @@
     }
   ],
   "auditLogs": [
+    {
+      "id": "log-1793046972311-dr7pv",
+      "action": "COLLECTION_JOB_COMPLETED",
+      "resource": "JOB",
+      "resourceId": "job-1793046972257-tlfy",
+      "details": "Job job-1793046972257-tlfy concluído. Encontrados: 3, Novos leads importados: 0, Atualizados: 0",
+      "timestamp": "2026-10-26T20:36:12.311Z"
+    },
+    {
+      "id": "log-1793046972258-xpndl",
+      "action": "COLLECTION_JOB_STARTED",
+      "resource": "JOB",
+      "resourceId": "job-1793046972257-tlfy",
+      "details": "Iniciado job job-1793046972257-tlfy para Oficina Mecânica em Campinas-SP",
+      "timestamp": "2026-10-26T20:36:12.258Z"
+    },
+    {
+      "id": "log-1793046972253-xmkcd",
+      "action": "COLLECTION_JOB_COMPLETED",
+      "resource": "JOB",
+      "resourceId": "job-1793046972068-zekx",
+      "details": "Job job-1793046972068-zekx concluído. Encontrados: 5, Novos leads importados: 0, Atualizados: 0",
+      "timestamp": "2026-10-26T20:36:12.253Z"
+    },
+    {
+      "id": "log-1793046972070-2nmwo",
+      "action": "COLLECTION_JOB_STARTED",
+      "resource": "JOB",
+      "resourceId": "job-1793046972068-zekx",
+      "details": "Iniciado job job-1793046972068-zekx para Hamburgueria em São Paulo-SP",
+      "timestamp": "2026-10-26T20:36:12.070Z"
+    },
+    {
+      "id": "log-1793046972048",
+      "action": "SUPPRESSION_ADDED",
+      "resource": "SUPPRESSION",
+      "details": "PHONE: (11) 94444-3333 adicionado à lista de supressão. Motivo: Solicitou exclusão",
+      "timestamp": "2026-10-26T20:36:12.048Z"
+    },
+    {
+      "id": "log-1793046889817-p895x",
+      "action": "COLLECTION_JOB_COMPLETED",
+      "resource": "JOB",
+      "resourceId": "job-1793046889479-re6h",
+      "details": "Job job-1793046889479-re6h concluído. Encontrados: 3, Novos leads importados: 3, Atualizados: 0",
+      "timestamp": "2026-10-26T20:34:49.817Z"
+    },
+    {
+      "id": "log-1793046889480-g1q28",
+      "action": "COLLECTION_JOB_STARTED",
+      "resource": "JOB",
+      "resourceId": "job-1793046889479-re6h",
+      "details": "Iniciado job job-1793046889479-re6h para Oficina Mecânica em Campinas-SP",
+      "timestamp": "2026-10-26T20:34:49.480Z"
+    },
+    {
+      "id": "log-1793046889476-fun1o",
+      "action": "COLLECTION_JOB_COMPLETED",
+      "resource": "JOB",
+      "resourceId": "job-1793046889240-v1pt",
+      "details": "Job job-1793046889240-v1pt concluído. Encontrados: 5, Novos leads importados: 0, Atualizados: 0",
+      "timestamp": "2026-10-26T20:34:49.476Z"
+    },
+    {
+      "id": "log-1793046889242-s82sh",
+      "action": "COLLECTION_JOB_STARTED",
+      "resource": "JOB",
+      "resourceId": "job-1793046889240-v1pt",
+      "details": "Iniciado job job-1793046889240-v1pt para Hamburgueria em São Paulo-SP",
+      "timestamp": "2026-10-26T20:34:49.242Z"
+    },
+    {
+      "id": "log-1793046889181",
+      "action": "SUPPRESSION_ADDED",
+      "resource": "SUPPRESSION",
+      "details": "PHONE: (11) 94444-3333 adicionado à lista de supressão. Motivo: Solicitou exclusão",
+      "timestamp": "2026-10-26T20:34:49.181Z"
+    },
     {
       "id": "log-1793046066772-ribi1",
       "action": "COLLECTION_JOB_COMPLETED",

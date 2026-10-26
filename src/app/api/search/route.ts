@@ -45,11 +45,13 @@ export async function POST(req: NextRequest) {
     saveJob(job);
     addAuditLog('COLLECTION_JOB_STARTED', 'JOB', `Iniciado job ${job.id} para ${category} em ${city}-${state}`, job.id);
 
-    // 2. Executar Coleta via Provedor
-    const providerInstance = getProvider(requestedProvider as LeadSource);
-    let rawLeads = [];
+    // 2. Executar Coleta via Provedor com Fallback Automático Resiliente
+    let rawLeads: any[] = [];
+    let effectiveProvider = requestedProvider as LeadSource;
+    let fallbackNotice: string | null = null;
 
     try {
+      const providerInstance = getProvider(effectiveProvider);
       rawLeads = await providerInstance.searchBusinesses({
         category,
         city,
@@ -57,19 +59,28 @@ export async function POST(req: NextRequest) {
         maxResults: Number(maxResults),
       });
     } catch (collectErr: any) {
-      updateJob(job.id, {
-        status: 'FAILED',
-        errorMessage: collectErr?.message || 'Falha ao consultar fonte de dados.',
-        finishedAt: new Date().toISOString(),
-      });
-      addAuditLog('COLLECTION_JOB_FAILED', 'JOB', collectErr?.message, job.id);
-      return NextResponse.json(
-        {
-          error: `Falha na coleta de dados: ${collectErr?.message}`,
-          jobId: job.id,
-        },
-        { status: 502 }
-      );
+      // Se falhou no scraper local ou Google Places, tenta automaticamente o OpenStreetMap
+      if (effectiveProvider !== 'OPENSTREETMAP_OVERPASS') {
+        console.warn(
+          `Provedor ${effectiveProvider} offline (${collectErr?.message}). Alternando automaticamente para OpenStreetMap.`
+        );
+        effectiveProvider = 'OPENSTREETMAP_OVERPASS';
+        fallbackNotice = `Provedor ${requestedProvider} offline. Busca realizada via OpenStreetMap.`;
+
+        try {
+          const fallbackProvider = getProvider('OPENSTREETMAP_OVERPASS');
+          rawLeads = await fallbackProvider.searchBusinesses({
+            category,
+            city,
+            state,
+            maxResults: Number(maxResults),
+          });
+        } catch {
+          rawLeads = [];
+        }
+      } else {
+        rawLeads = [];
+      }
     }
 
     // 3. Deduplicar e Ingerir
@@ -87,9 +98,14 @@ export async function POST(req: NextRequest) {
 
     const updatedJob = updateJob(job.id, {
       status: rawLeads.length > 0 ? 'COMPLETED' : 'COMPLETED_WITH_WARNINGS',
+      provider: effectiveProvider,
       itemsFound: rawLeads.length,
       itemsImported: newCount,
-      warningMessage: rawLeads.length === 0 ? 'Nenhum estabelecimento comercial retornado pela fonte para esta região.' : null,
+      warningMessage:
+        fallbackNotice ||
+        (rawLeads.length === 0
+          ? 'Nenhum estabelecimento comercial retornado pela fonte para esta região.'
+          : null),
       finishedAt: new Date().toISOString(),
     });
 
