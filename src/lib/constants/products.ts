@@ -1,0 +1,74 @@
+import { Product } from '@/types';
+
+export const INITIAL_PRODUCTS: Product[] = [
+  {
+    id: 'prod-mesago',
+    name: 'MesaGo',
+    slug: 'mesago',
+    description: 'Sistema completo para gestão de pedidos, cardápio digital interativo, organização de delivery e atendimento de salão/mesas.',
+    targetSegments: [
+      'Hamburgueria',
+      'Pizzaria',
+      'Restaurante',
+      'Lanchonete',
+      'Açaíteria',
+      'Cafeteria',
+      'Dark Kitchen',
+      'Doceria',
+      'Churrascaria',
+      'Comida Japonesa'
+    ],
+    keyFeatures: [
+      'Cardápio Digital com QR Code',
+      'Gestão de Pedidos para Delivery e Retirada',
+      'Integração direta com WhatsApp',
+      'Organização de Comandas e Mesas em tempo real',
+      'Controle de tempos de preparo na cozinha (KDS)'
+    ]
+  },
+  {
+    id: 'prod-torqueos',
+    name: 'TorqueOS',
+    slug: 'torqueos',
+    description: 'Sistema operacional e ERP especializado para oficinas mecânicas, centros automotivos e manutenção veicular.',
+    targetSegments: [
+      'Oficina Mecânica',
+      'Centro Automotivo',
+      'Auto Elétrica',
+      'Oficina de Motocicletas',
+      'Funilaria e Pintura',
+      'Troca de Óleo',
+      'Alinhamento e Balanceamento',
+      'Ar Condicionado Automotivo'
+    ],
+    keyFeatures: [
+      'Emissão de Ordem de Serviço (OS) digital com fotos e checklist',
+      'Controle de Estoque de autopeças e lubrificantes',
+      'Histórico de manutenções por placa do veículo',
+      'Envio de orçamento aprovável via WhatsApp para o cliente',
+      'Apuração de comissões por mecânico e produtividade'
+    ]
+  },
+  {
+    id: 'prod-fiscal',
+    name: 'Software Fiscal',
+    slug: 'software-fiscal',
+    description: 'Emissão ágil e automatizada de documentos fiscais (NF-e, NFC-e, NFS-e) com validação de regras tributárias e backup em nuvem.',
+    targetSegments: [
+      'Varejista',
+      'Distribuidor',
+      'Prestador de Serviços',
+      'Material de Construção',
+      'Autopeças',
+      'Comércio Geral',
+      'Pequenas e Médias Empresas'
+    ],
+    keyFeatures: [
+      'Emissão ultrarrápida de NF-e, NFC-e e NFS-e',
+      'Cálculo e parametrização automática de impostos (ICMS, PIS, COFINS, ISS)',
+      'Envio automático de XML e DANFE por e-mail e WhatsApp',
+      'Guarda segura de arquivos fiscais em nuvem por 5 anos',
+      'Integração simples via API REST com sistemas legados'
+    ]
+  }
+];
