@@ -19,44 +19,79 @@ interface DatabaseSchema {
   auditLogs: AuditLogEntry[];
 }
 
-const DATA_DIR = path.join(process.cwd(), 'data');
+const isServerless = Boolean(
+  process.env.VERCEL ||
+  process.env.AWS_LAMBDA_FUNCTION_NAME ||
+  process.env.LAMBDA_TASK_ROOT
+);
+
+const DATA_DIR = isServerless ? path.join('/tmp', 'data') : path.join(process.cwd(), 'data');
 const DB_FILE = path.join(DATA_DIR, 'leads_database.json');
+const SEED_FILE = path.join(process.cwd(), 'data', 'leads_database.json');
+
+let memoryDb: DatabaseSchema | null = null;
 
 function ensureDatabase(): DatabaseSchema {
-  if (!fs.existsSync(DATA_DIR)) {
-    fs.mkdirSync(DATA_DIR, { recursive: true });
-  }
-
-  if (!fs.existsSync(DB_FILE)) {
-    const initialData: DatabaseSchema = {
-      products: INITIAL_PRODUCTS,
-      leads: [],
-      jobs: [],
-      suppressionList: [],
-      auditLogs: [
-        {
-          id: 'log-init',
-          action: 'SYSTEM_INITIALIZED',
-          resource: 'DATABASE',
-          details: 'Banco de dados operacional inicializado.',
-          timestamp: new Date().toISOString(),
-        },
-      ],
-    };
-    fs.writeFileSync(DB_FILE, JSON.stringify(initialData, null, 2), 'utf-8');
-    return initialData;
+  if (memoryDb) {
+    return memoryDb;
   }
 
   try {
+    if (!fs.existsSync(DATA_DIR)) {
+      fs.mkdirSync(DATA_DIR, { recursive: true });
+    }
+
+    if (!fs.existsSync(DB_FILE)) {
+      if (fs.existsSync(SEED_FILE)) {
+        try {
+          const seedContent = fs.readFileSync(SEED_FILE, 'utf-8');
+          const seedData = JSON.parse(seedContent) as DatabaseSchema;
+          memoryDb = seedData;
+          try {
+            fs.writeFileSync(DB_FILE, seedContent, 'utf-8');
+          } catch (writeErr) {
+            console.warn('Não foi possível gravar no disco, operando em memória:', writeErr);
+          }
+          return seedData;
+        } catch (seedErr) {
+          console.warn('Falha ao ler arquivo semente:', seedErr);
+        }
+      }
+
+      const initialData: DatabaseSchema = {
+        products: INITIAL_PRODUCTS,
+        leads: [],
+        jobs: [],
+        suppressionList: [],
+        auditLogs: [
+          {
+            id: 'log-init',
+            action: 'SYSTEM_INITIALIZED',
+            resource: 'DATABASE',
+            details: 'Banco de dados operacional inicializado.',
+            timestamp: new Date().toISOString(),
+          },
+        ],
+      };
+      try {
+        fs.writeFileSync(DB_FILE, JSON.stringify(initialData, null, 2), 'utf-8');
+      } catch (writeErr) {
+        console.warn('Não foi possível gravar no disco, operando em memória:', writeErr);
+      }
+      memoryDb = initialData;
+      return initialData;
+    }
+
     const raw = fs.readFileSync(DB_FILE, 'utf-8');
     const data = JSON.parse(raw) as DatabaseSchema;
     if (!data.products || data.products.length === 0) {
       data.products = INITIAL_PRODUCTS;
       saveDatabase(data);
     }
+    memoryDb = data;
     return data;
   } catch (error) {
-    console.error('Falha ao ler banco de dados. Criando fallback limpo.', error);
+    console.error('Falha ao ler banco de dados. Usando memória/fallback limpo.', error);
     const fallback: DatabaseSchema = {
       products: INITIAL_PRODUCTS,
       leads: [],
@@ -64,18 +99,21 @@ function ensureDatabase(): DatabaseSchema {
       suppressionList: [],
       auditLogs: [],
     };
-    saveDatabase(fallback);
+    memoryDb = fallback;
     return fallback;
   }
 }
 
 function saveDatabase(data: DatabaseSchema): void {
-  if (!fs.existsSync(DATA_DIR)) {
-    fs.mkdirSync(DATA_DIR, { recursive: true });
+  memoryDb = data;
+  try {
+    if (!fs.existsSync(DATA_DIR)) {
+      fs.mkdirSync(DATA_DIR, { recursive: true });
+    }
+    fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2), 'utf-8');
+  } catch (err) {
+    console.warn('Não foi possível persistir no disco (usando memória):', err);
   }
-  const tempPath = `${DB_FILE}.tmp.${Date.now()}`;
-  fs.writeFileSync(tempPath, JSON.stringify(data, null, 2), 'utf-8');
-  fs.renameSync(tempPath, DB_FILE);
 }
 
 // LEADS

@@ -60,8 +60,95 @@ export class OverpassOsmProvider implements BusinessProvider {
     maxResults: number;
   }): Promise<RawBusinessLead[]> {
     const { category, city, state, maxResults } = params;
+    const limit = Math.min(maxResults || 20, 50);
 
-    // 1. Obter coordenadas da cidade via Nominatim com timeout seguro
+    // 1. Tentar busca rápida de POIs via Nominatim (responde em < 1s)
+    try {
+      const nomQueries = [
+        `${category}, ${city}, ${state}, Brasil`,
+        `${category} em ${city}, ${state}`,
+        `${category}, ${city}`,
+      ];
+
+      for (const queryStr of nomQueries) {
+        const nomUrl = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
+          queryStr
+        )}&format=json&addressdetails=1&extratags=1&limit=${limit}`;
+
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 4000);
+
+        const res = await fetch(nomUrl, {
+          headers: {
+            'User-Agent': 'VisionSolutions-B2BLeadHunter/2.0 (contato@visionsolutions.com.br)',
+          },
+          signal: controller.signal,
+        });
+        clearTimeout(timeout);
+
+        if (res.ok) {
+          const items = await res.json();
+          if (Array.isArray(items) && items.length > 0) {
+            const leads: RawBusinessLead[] = [];
+
+            for (const item of items) {
+              const name = item.name || (item.display_name ? item.display_name.split(',')[0].trim() : null);
+              if (!name) continue;
+
+              const addr = item.address || {};
+              const road = addr.road || addr.pedestrian || addr.street || '';
+              const houseNumber = addr.house_number || '';
+              const suburb = addr.suburb || addr.neighbourhood || addr.district || '';
+              const addressParts = [road, houseNumber, suburb].filter(Boolean);
+              const address = addressParts.length > 0 ? addressParts.join(', ') : item.display_name || null;
+
+              const extra = item.extratags || {};
+              const rawPhone =
+                extra['contact:phone'] ||
+                extra.phone ||
+                extra['contact:mobile'] ||
+                extra.mobile ||
+                null;
+              const rawWebsite =
+                extra['contact:website'] ||
+                extra.website ||
+                extra['contact:instagram'] ||
+                null;
+              const rawEmail = extra['contact:email'] || extra.email || null;
+
+              leads.push({
+                externalId: `osm-${item.osm_type || 'node'}-${item.osm_id || item.place_id}`,
+                name,
+                category: extra.cuisine || item.type || category,
+                address,
+                city: addr.city || addr.town || addr.municipality || city,
+                state: addr.state || state,
+                phone: rawPhone,
+                website: rawWebsite,
+                email: rawEmail,
+                latitude: item.lat ? parseFloat(item.lat) : null,
+                longitude: item.lon ? parseFloat(item.lon) : null,
+                rating: null,
+                reviewsCount: null,
+                source: 'OPENSTREETMAP_OVERPASS',
+                sourceUrl:
+                  item.osm_type && item.osm_id
+                    ? `https://www.openstreetmap.org/${item.osm_type}/${item.osm_id}`
+                    : `https://nominatim.openstreetmap.org/ui/details.html?osmtype=${item.osm_type}&osmid=${item.osm_id}`,
+              });
+            }
+
+            if (leads.length > 0) {
+              return leads;
+            }
+          }
+        }
+      }
+    } catch (nomErr) {
+      console.warn('Consulta direta Nominatim falhou, tentando espelhos Overpass:', nomErr);
+    }
+
+    // 2. Se Nominatim não retornou, obter coordenadas aproximadas da cidade
     const geocodeUrl = `https://nominatim.openstreetmap.org/search?city=${encodeURIComponent(
       city
     )}&state=${encodeURIComponent(state)}&country=Brazil&format=json&limit=1`;
@@ -71,7 +158,7 @@ export class OverpassOsmProvider implements BusinessProvider {
 
     try {
       const geoController = new AbortController();
-      const geoTimeout = setTimeout(() => geoController.abort(), 7000);
+      const geoTimeout = setTimeout(() => geoController.abort(), 3000);
       const geoRes = await fetch(geocodeUrl, {
         headers: { 'User-Agent': 'VisionSolutions-B2BLeadHunter/2.0 (contato@visionsolutions.com.br)' },
         signal: geoController.signal,
@@ -85,11 +172,11 @@ export class OverpassOsmProvider implements BusinessProvider {
           lon = parseFloat(geoData[0].lon);
         }
       }
-    } catch (e) {
-      console.warn('Geocodificação inicial usou coordenadas aproximadas:', city, e);
+    } catch {
+      // Coordenadas aproximadas
     }
 
-    // 2. Mapeamento inteligente de tags OSM para categorias comerciais
+    // 3. Mapeamento inteligente de tags OSM para categorias comerciais
     const catLower = category.toLowerCase();
     let amenityFilter = '["amenity"~"restaurant|fast_food|cafe|bar"]';
 
@@ -117,30 +204,33 @@ export class OverpassOsmProvider implements BusinessProvider {
       amenityFilter = '["shop"]';
     }
 
-    const radius = 12000;
-    const limit = Math.min(maxResults || 20, 50);
-
+    // Raio otimizado (4000m) para resposta em poucos segundos
+    const radius = 4000;
     const overpassQuery = `
-      [out:json][timeout:35];
+      [out:json][timeout:8];
       (
         node${amenityFilter}(around:${radius},${lat},${lon})["name"];
-        way${amenityFilter}(around:${radius},${lat},${lon})["name"];
       );
       out center ${limit};
     `;
 
-    // 3. Tentar os servidores com tolerância e fallback
+    // 4. Tentar servidores Overpass com timeout ágil (6s)
     let lastError: Error | null = null;
     let data: any = null;
 
-    for (const serverUrl of this.OVERPASS_SERVERS) {
+    const servers = [
+      'https://overpass-api.de/api/interpreter',
+      'https://overpass.kumi.systems/api/interpreter',
+    ];
+
+    for (const serverUrl of servers) {
       try {
         const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 35000);
+        const timeout = setTimeout(() => controller.abort(), 6000);
 
         const response = await fetch(serverUrl, {
           method: 'POST',
-          body: overpassQuery,
+          body: 'data=' + encodeURIComponent(overpassQuery),
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
             'User-Agent': 'VisionSolutions-B2BLeadHunter/2.0',
@@ -153,7 +243,7 @@ export class OverpassOsmProvider implements BusinessProvider {
           data = await response.json();
           break;
         } else {
-          lastError = new Error(`HTTP ${response.status} de ${serverUrl}`);
+          lastError = new Error(`HTTP ${response.status}`);
         }
       } catch (err: any) {
         lastError = err;
@@ -162,7 +252,7 @@ export class OverpassOsmProvider implements BusinessProvider {
 
     if (!data) {
       throw new Error(
-        `Servidores Overpass temporariamente ocupados (${lastError?.message || 'Timeout'}). Tente novamente em alguns segundos.`
+        `Serviços de mapa temporariamente sobrecarregados (${lastError?.message || 'Timeout'}). Tente novamente em alguns segundos.`
       );
     }
 

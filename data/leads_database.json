@@ -71,9 +71,402 @@
       ]
     }
   ],
-  "leads": [],
-  "jobs": [],
+  "leads": [
+    {
+      "id": "lead-1793046054951-mcy1n",
+      "name": "Brabus Hamburgueria",
+      "legalName": null,
+      "cnpj": null,
+      "category": "burger",
+      "productId": "prod-mesago",
+      "productName": "MesaGo",
+      "address": "Rua Heitor Penteado, 1310A, Sumarezinho",
+      "city": "São Paulo",
+      "state": "São Paulo",
+      "latitude": -23.5461295,
+      "longitude": -46.6909206,
+      "phone": null,
+      "website": null,
+      "email": null,
+      "rating": null,
+      "reviewsCount": null,
+      "source": "OPENSTREETMAP_OVERPASS",
+      "sourceUrl": "https://www.openstreetmap.org/way/1065928297",
+      "sourceExternalId": "osm-way-1065928297",
+      "dataConfidence": "LOW",
+      "verificationStatus": "UNVERIFIED",
+      "pipelineStage": "NEW",
+      "priority": "LOW",
+      "score": 30,
+      "scoreFactors": [
+        "Segmento de alimentação altamente aderente ao MesaGo (+30)",
+        "Telefone comercial ausente na consulta original (0)"
+      ],
+      "firstCollectedAt": "2026-10-26T20:20:54.951Z",
+      "lastVerifiedAt": "2026-10-26T20:21:06.769Z",
+      "notes": null,
+      "evidences": [
+        {
+          "id": "ev-1793046054951-1",
+          "category": "ORIGEM_VERIFICADA",
+          "description": "Empresa identificada em consulta na base OPENSTREETMAP_OVERPASS.",
+          "evidenceUrl": "https://www.openstreetmap.org/way/1065928297",
+          "detectedAt": "2026-10-26T20:20:54.951Z"
+        }
+      ],
+      "activities": [
+        {
+          "id": "act-1793046054951-1",
+          "leadId": "lead-1793046054951-mcy1n",
+          "type": "STATUS_UPDATE",
+          "title": "Lead Ingerido",
+          "description": "Lead cadastrado na base de prospecção via OPENSTREETMAP_OVERPASS.",
+          "createdAt": "2026-10-26T20:20:54.951Z",
+          "operatorName": "Sistema"
+        }
+      ],
+      "stageHistory": [
+        {
+          "id": "sh-1793046054951-1",
+          "fromStage": "NEW",
+          "toStage": "NEW",
+          "reason": "Criação inicial do lead",
+          "changedAt": "2026-10-26T20:20:54.951Z"
+        }
+      ],
+      "aiAnalysis": null
+    },
+    {
+      "id": "lead-1793046054951-kvj0b",
+      "name": "Hamburgueria Corsário",
+      "legalName": null,
+      "cnpj": null,
+      "category": "burger",
+      "productId": "prod-mesago",
+      "productName": "MesaGo",
+      "address": "Rua Maniutuba, 26, Carrão",
+      "city": "São Paulo",
+      "state": "São Paulo",
+      "latitude": -23.5460577,
+      "longitude": -46.5489203,
+      "phone": "(11) 2768-4774",
+      "website": null,
+      "email": null,
+      "rating": null,
+      "reviewsCount": null,
+      "source": "OPENSTREETMAP_OVERPASS",
+      "sourceUrl": "https://www.openstreetmap.org/way/837272579",
+      "sourceExternalId": "osm-way-837272579",
+      "dataConfidence": "MEDIUM",
+      "verificationStatus": "UNVERIFIED",
+      "pipelineStage": "NEW",
+      "priority": "MEDIUM",
+      "score": 60,
+      "scoreFactors": [
+        "Segmento de alimentação altamente aderente ao MesaGo (+30)",
+        "Telefone comercial público disponível para contato (+30)"
+      ],
+      "firstCollectedAt": "2026-10-26T20:20:54.951Z",
+      "lastVerifiedAt": "2026-10-26T20:21:06.769Z",
+      "notes": null,
+      "evidences": [
+        {
+          "id": "ev-1793046054951-1",
+          "category": "ORIGEM_VERIFICADA",
+          "description": "Empresa identificada em consulta na base OPENSTREETMAP_OVERPASS.",
+          "evidenceUrl": "https://www.openstreetmap.org/way/837272579",
+          "detectedAt": "2026-10-26T20:20:54.951Z"
+        }
+      ],
+      "activities": [
+        {
+          "id": "act-1793046054951-1",
+          "leadId": "lead-1793046054951-kvj0b",
+          "type": "STATUS_UPDATE",
+          "title": "Lead Ingerido",
+          "description": "Lead cadastrado na base de prospecção via OPENSTREETMAP_OVERPASS.",
+          "createdAt": "2026-10-26T20:20:54.951Z",
+          "operatorName": "Sistema"
+        }
+      ],
+      "stageHistory": [
+        {
+          "id": "sh-1793046054951-1",
+          "fromStage": "NEW",
+          "toStage": "NEW",
+          "reason": "Criação inicial do lead",
+          "changedAt": "2026-10-26T20:20:54.951Z"
+        }
+      ],
+      "aiAnalysis": null
+    },
+    {
+      "id": "lead-1793046054951-zhasu",
+      "name": "Brabo's Hamburgueria",
+      "legalName": null,
+      "cnpj": null,
+      "category": "burger",
+      "productId": "prod-mesago",
+      "productName": "MesaGo",
+      "address": "Rua Nair Marques de Souza, Jardim Bontempo",
+      "city": "Taboão da Serra",
+      "state": "São Paulo",
+      "latitude": -23.6120756,
+      "longitude": -46.761632,
+      "phone": null,
+      "website": "https://pedefacil.pagseguro.com.br/brabos-hamburgueria",
+      "email": null,
+      "rating": null,
+      "reviewsCount": null,
+      "source": "OPENSTREETMAP_OVERPASS",
+      "sourceUrl": "https://www.openstreetmap.org/node/9895270758",
+      "sourceExternalId": "osm-node-9895270758",
+      "dataConfidence": "MEDIUM",
+      "verificationStatus": "WEBSITE_VERIFIED",
+      "pipelineStage": "NEW",
+      "priority": "MEDIUM",
+      "score": 50,
+      "scoreFactors": [
+        "Segmento de alimentação altamente aderente ao MesaGo (+30)",
+        "Telefone comercial ausente na consulta original (0)",
+        "Possui presença digital / site próprio (+20)"
+      ],
+      "firstCollectedAt": "2026-10-26T20:20:54.951Z",
+      "lastVerifiedAt": "2026-10-26T20:21:06.769Z",
+      "notes": null,
+      "evidences": [
+        {
+          "id": "ev-1793046054951-1",
+          "category": "ORIGEM_VERIFICADA",
+          "description": "Empresa identificada em consulta na base OPENSTREETMAP_OVERPASS.",
+          "evidenceUrl": "https://www.openstreetmap.org/node/9895270758",
+          "detectedAt": "2026-10-26T20:20:54.951Z"
+        }
+      ],
+      "activities": [
+        {
+          "id": "act-1793046054951-1",
+          "leadId": "lead-1793046054951-zhasu",
+          "type": "STATUS_UPDATE",
+          "title": "Lead Ingerido",
+          "description": "Lead cadastrado na base de prospecção via OPENSTREETMAP_OVERPASS.",
+          "createdAt": "2026-10-26T20:20:54.951Z",
+          "operatorName": "Sistema"
+        }
+      ],
+      "stageHistory": [
+        {
+          "id": "sh-1793046054951-1",
+          "fromStage": "NEW",
+          "toStage": "NEW",
+          "reason": "Criação inicial do lead",
+          "changedAt": "2026-10-26T20:20:54.951Z"
+        }
+      ],
+      "aiAnalysis": null
+    },
+    {
+      "id": "lead-1793046054951-ix38y",
+      "name": "Hamburgueria do Sujinho",
+      "legalName": null,
+      "cnpj": null,
+      "category": "burger",
+      "productId": "prod-mesago",
+      "productName": "MesaGo",
+      "address": "Rua Maceió, 64, Consolação",
+      "city": "São Paulo",
+      "state": "São Paulo",
+      "latitude": -23.5529037,
+      "longitude": -46.6603647,
+      "phone": null,
+      "website": "http://www.sujinho.com.br/hamburgueria/",
+      "email": null,
+      "rating": null,
+      "reviewsCount": null,
+      "source": "OPENSTREETMAP_OVERPASS",
+      "sourceUrl": "https://www.openstreetmap.org/node/5180904721",
+      "sourceExternalId": "osm-node-5180904721",
+      "dataConfidence": "MEDIUM",
+      "verificationStatus": "WEBSITE_VERIFIED",
+      "pipelineStage": "NEW",
+      "priority": "MEDIUM",
+      "score": 50,
+      "scoreFactors": [
+        "Segmento de alimentação altamente aderente ao MesaGo (+30)",
+        "Telefone comercial ausente na consulta original (0)",
+        "Possui presença digital / site próprio (+20)"
+      ],
+      "firstCollectedAt": "2026-10-26T20:20:54.951Z",
+      "lastVerifiedAt": "2026-10-26T20:21:06.769Z",
+      "notes": null,
+      "evidences": [
+        {
+          "id": "ev-1793046054951-1",
+          "category": "ORIGEM_VERIFICADA",
+          "description": "Empresa identificada em consulta na base OPENSTREETMAP_OVERPASS.",
+          "evidenceUrl": "https://www.openstreetmap.org/node/5180904721",
+          "detectedAt": "2026-10-26T20:20:54.951Z"
+        }
+      ],
+      "activities": [
+        {
+          "id": "act-1793046054951-1",
+          "leadId": "lead-1793046054951-ix38y",
+          "type": "STATUS_UPDATE",
+          "title": "Lead Ingerido",
+          "description": "Lead cadastrado na base de prospecção via OPENSTREETMAP_OVERPASS.",
+          "createdAt": "2026-10-26T20:20:54.951Z",
+          "operatorName": "Sistema"
+        }
+      ],
+      "stageHistory": [
+        {
+          "id": "sh-1793046054951-1",
+          "fromStage": "NEW",
+          "toStage": "NEW",
+          "reason": "Criação inicial do lead",
+          "changedAt": "2026-10-26T20:20:54.951Z"
+        }
+      ],
+      "aiAnalysis": null
+    },
+    {
+      "id": "lead-1793046054951-7eq2x",
+      "name": "Hamburgueria do Bebel",
+      "legalName": null,
+      "cnpj": null,
+      "category": "burger",
+      "productId": "prod-mesago",
+      "productName": "MesaGo",
+      "address": "Avenida Goiás, Santa Paula",
+      "city": "São Caetano do Sul",
+      "state": "São Paulo",
+      "latitude": -23.6166421,
+      "longitude": -46.561772,
+      "phone": "(11) 4224-1166",
+      "website": null,
+      "email": null,
+      "rating": null,
+      "reviewsCount": null,
+      "source": "OPENSTREETMAP_OVERPASS",
+      "sourceUrl": "https://www.openstreetmap.org/node/12374914304",
+      "sourceExternalId": "osm-node-12374914304",
+      "dataConfidence": "MEDIUM",
+      "verificationStatus": "UNVERIFIED",
+      "pipelineStage": "NEW",
+      "priority": "MEDIUM",
+      "score": 60,
+      "scoreFactors": [
+        "Segmento de alimentação altamente aderente ao MesaGo (+30)",
+        "Telefone comercial público disponível para contato (+30)"
+      ],
+      "firstCollectedAt": "2026-10-26T20:20:54.951Z",
+      "lastVerifiedAt": "2026-10-26T20:21:06.769Z",
+      "notes": null,
+      "evidences": [
+        {
+          "id": "ev-1793046054951-1",
+          "category": "ORIGEM_VERIFICADA",
+          "description": "Empresa identificada em consulta na base OPENSTREETMAP_OVERPASS.",
+          "evidenceUrl": "https://www.openstreetmap.org/node/12374914304",
+          "detectedAt": "2026-10-26T20:20:54.951Z"
+        }
+      ],
+      "activities": [
+        {
+          "id": "act-1793046054951-1",
+          "leadId": "lead-1793046054951-7eq2x",
+          "type": "STATUS_UPDATE",
+          "title": "Lead Ingerido",
+          "description": "Lead cadastrado na base de prospecção via OPENSTREETMAP_OVERPASS.",
+          "createdAt": "2026-10-26T20:20:54.951Z",
+          "operatorName": "Sistema"
+        }
+      ],
+      "stageHistory": [
+        {
+          "id": "sh-1793046054951-1",
+          "fromStage": "NEW",
+          "toStage": "NEW",
+          "reason": "Criação inicial do lead",
+          "changedAt": "2026-10-26T20:20:54.951Z"
+        }
+      ],
+      "aiAnalysis": null
+    }
+  ],
+  "jobs": [
+    {
+      "id": "job-1793046066431-138m",
+      "provider": "OPENSTREETMAP_OVERPASS",
+      "searchQuery": "Hamburgueria em São Paulo, SP",
+      "targetProduct": "MesaGo",
+      "targetCategory": "Hamburgueria",
+      "targetCity": "São Paulo",
+      "targetState": "SP",
+      "maxResults": 5,
+      "status": "COMPLETED",
+      "itemsFound": 5,
+      "itemsImported": 0,
+      "startedAt": "2026-10-26T20:21:06.431Z",
+      "warningMessage": null,
+      "finishedAt": "2026-10-26T20:21:06.772Z"
+    },
+    {
+      "id": "job-1793046054762-wp1r",
+      "provider": "OPENSTREETMAP_OVERPASS",
+      "searchQuery": "Hamburgueria em São Paulo, SP",
+      "targetProduct": "MesaGo",
+      "targetCategory": "Hamburgueria",
+      "targetCity": "São Paulo",
+      "targetState": "SP",
+      "maxResults": 5,
+      "status": "COMPLETED",
+      "itemsFound": 5,
+      "itemsImported": 5,
+      "startedAt": "2026-10-26T20:20:54.762Z",
+      "warningMessage": null,
+      "finishedAt": "2026-10-26T20:20:54.953Z"
+    },
+    {
+      "id": "job-1793045586185-16pj",
+      "provider": "OPENSTREETMAP_OVERPASS",
+      "searchQuery": "Hamburgueria em São Paulo, SP",
+      "targetProduct": "MesaGo",
+      "targetCategory": "Hamburgueria",
+      "targetCity": "São Paulo",
+      "targetState": "SP",
+      "maxResults": 5,
+      "status": "FAILED",
+      "itemsFound": 0,
+      "itemsImported": 0,
+      "startedAt": "2026-10-26T20:13:06.185Z",
+      "errorMessage": "Servidores Overpass temporariamente ocupados (This operation was aborted). Tente novamente em alguns segundos.",
+      "finishedAt": "2026-10-26T20:13:42.149Z"
+    },
+    {
+      "id": "job-1793045560582-5pac",
+      "provider": "OPENSTREETMAP_OVERPASS",
+      "searchQuery": "Hamburgueria em São Paulo, SP",
+      "targetProduct": "MesaGo",
+      "targetCategory": "Hamburgueria",
+      "targetCity": "São Paulo",
+      "targetState": "SP",
+      "maxResults": 5,
+      "status": "RUNNING",
+      "itemsFound": 0,
+      "itemsImported": 0,
+      "startedAt": "2026-10-26T20:12:40.582Z"
+    }
+  ],
   "suppressionList": [
+    {
+      "id": "sup-1793046066382",
+      "identifier": "(11) 94444-3333",
+      "type": "PHONE",
+      "reason": "Solicitou exclusão",
+      "suppressedAt": "2026-10-26T20:21:06.382Z"
+    },
     {
       "id": "sup-1793045093895",
       "identifier": "(11) 94444-3333",
@@ -97,6 +490,69 @@
     }
   ],
   "auditLogs": [
+    {
+      "id": "log-1793046066772-ribi1",
+      "action": "COLLECTION_JOB_COMPLETED",
+      "resource": "JOB",
+      "resourceId": "job-1793046066431-138m",
+      "details": "Job job-1793046066431-138m concluído. Encontrados: 5, Novos leads importados: 0, Atualizados: 0",
+      "timestamp": "2026-10-26T20:21:06.772Z"
+    },
+    {
+      "id": "log-1793046066434-apx93",
+      "action": "COLLECTION_JOB_STARTED",
+      "resource": "JOB",
+      "resourceId": "job-1793046066431-138m",
+      "details": "Iniciado job job-1793046066431-138m para Hamburgueria em São Paulo-SP",
+      "timestamp": "2026-10-26T20:21:06.434Z"
+    },
+    {
+      "id": "log-1793046066383",
+      "action": "SUPPRESSION_ADDED",
+      "resource": "SUPPRESSION",
+      "details": "PHONE: (11) 94444-3333 adicionado à lista de supressão. Motivo: Solicitou exclusão",
+      "timestamp": "2026-10-26T20:21:06.383Z"
+    },
+    {
+      "id": "log-1793046054954-bebjj",
+      "action": "COLLECTION_JOB_COMPLETED",
+      "resource": "JOB",
+      "resourceId": "job-1793046054762-wp1r",
+      "details": "Job job-1793046054762-wp1r concluído. Encontrados: 5, Novos leads importados: 5, Atualizados: 0",
+      "timestamp": "2026-10-26T20:20:54.954Z"
+    },
+    {
+      "id": "log-1793046054763-g5pv9",
+      "action": "COLLECTION_JOB_STARTED",
+      "resource": "JOB",
+      "resourceId": "job-1793046054762-wp1r",
+      "details": "Iniciado job job-1793046054762-wp1r para Hamburgueria em São Paulo-SP",
+      "timestamp": "2026-10-26T20:20:54.763Z"
+    },
+    {
+      "id": "log-1793045622151-gnknf",
+      "action": "COLLECTION_JOB_FAILED",
+      "resource": "JOB",
+      "resourceId": "job-1793045586185-16pj",
+      "details": "Servidores Overpass temporariamente ocupados (This operation was aborted). Tente novamente em alguns segundos.",
+      "timestamp": "2026-10-26T20:13:42.151Z"
+    },
+    {
+      "id": "log-1793045586188-6ws09",
+      "action": "COLLECTION_JOB_STARTED",
+      "resource": "JOB",
+      "resourceId": "job-1793045586185-16pj",
+      "details": "Iniciado job job-1793045586185-16pj para Hamburgueria em São Paulo-SP",
+      "timestamp": "2026-10-26T20:13:06.188Z"
+    },
+    {
+      "id": "log-1793045560585-bcduc",
+      "action": "COLLECTION_JOB_STARTED",
+      "resource": "JOB",
+      "resourceId": "job-1793045560582-5pac",
+      "details": "Iniciado job job-1793045560582-5pac para Hamburgueria em São Paulo-SP",
+      "timestamp": "2026-10-26T20:12:40.585Z"
+    },
     {
       "id": "log-1793045093895",
       "action": "SUPPRESSION_ADDED",
