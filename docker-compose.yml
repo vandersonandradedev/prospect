@@ -1,0 +1,9 @@
+services:
+  gmaps-scraper:
+    image: gosom/google-maps-scraper:latest
+    container_name: gmaps-scraper
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+    environment:
+      - PORT=8080

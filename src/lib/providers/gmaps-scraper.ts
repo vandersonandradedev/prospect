@@ -32,7 +32,7 @@ export class GoogleMapsScraperProvider implements BusinessProvider {
     } catch {
       return {
         available: false,
-        message: 'Serviço local offline. Inicie o contêiner com: docker compose up -d',
+        message: 'Coletor local Docker opcional (offline). Não necessário para uso na nuvem.',
         isLocalService: true,
       };
     }
