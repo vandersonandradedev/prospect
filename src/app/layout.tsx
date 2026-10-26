@@ -5,6 +5,15 @@ import Sidebar from '@/components/Sidebar';
 export const metadata: Metadata = {
   title: 'Vision Solutions - LeadHunter B2B',
   description: 'Sistema Funcional de Prospecção Comercial B2B e Captação de Clientes Reais',
+  icons: {
+    icon: [
+      { url: '/favicon.ico' },
+      { url: '/icon.png', type: 'image/png' },
+    ],
+    apple: [
+      { url: '/apple-icon.png' },
+    ],
+  },
 };
 
 export default function RootLayout({

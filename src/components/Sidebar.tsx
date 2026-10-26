@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import {
   LayoutDashboard,
@@ -35,15 +36,24 @@ export default function Sidebar() {
     <aside className="w-64 bg-slate-900 text-slate-100 flex flex-col border-r border-slate-800 shrink-0">
       {/* Brand Header */}
       <div className="p-5 border-b border-slate-800">
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-lg bg-sky-500 flex items-center justify-center font-bold text-white shadow-lg shadow-sky-500/30">
-            VS
+        <Link href="/" className="flex items-center gap-3 group">
+          <div className="relative w-10 h-10 rounded-xl overflow-hidden shadow-lg shadow-sky-500/20 ring-1 ring-sky-500/30 group-hover:scale-105 transition-transform bg-slate-800">
+            <Image
+              src="/logo.png"
+              alt="Vision Solutions Logo"
+              width={40}
+              height={40}
+              className="w-full h-full object-cover"
+              priority
+            />
           </div>
           <div>
-            <h1 className="font-bold text-base leading-tight text-white tracking-tight">Vision Solutions</h1>
+            <h1 className="font-bold text-base leading-tight text-white tracking-tight group-hover:text-sky-300 transition-colors">
+              Vision Solutions
+            </h1>
             <p className="text-xs text-sky-400 font-medium">LeadHunter B2B</p>
           </div>
-        </div>
+        </Link>
       </div>
 
       {/* Nav Links */}
