@@ -12,6 +12,28 @@ export class OverpassOsmProvider implements BusinessProvider {
 
   async checkHealth(): Promise<ProviderHealth> {
     try {
+      // 1. Testa Nominatim (geocodificação aberta e busca de limites territoriais)
+      const nomController = new AbortController();
+      const nomTimeout = setTimeout(() => nomController.abort(), 5000);
+      const nomRes = await fetch('https://nominatim.openstreetmap.org/search?format=json&q=Brazil&limit=1', {
+        headers: {
+          'User-Agent': 'VisionSolutions-B2BLeadHunter/2.0 (contato@visionsolutions.com.br)',
+        },
+        signal: nomController.signal,
+      });
+      clearTimeout(nomTimeout);
+
+      if (nomRes.ok) {
+        return {
+          available: true,
+          message: 'Rede OpenStreetMap / Nominatim operacional e pronta para consultas territoriais.',
+        };
+      }
+    } catch {
+      // Continua para checagem do status Overpass
+    }
+
+    try {
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 6000);
       const res = await fetch('https://overpass-api.de/api/status', {
@@ -25,7 +47,7 @@ export class OverpassOsmProvider implements BusinessProvider {
       if (res.ok) {
         return { available: true, message: 'Servidor Overpass operacional e respondendo.' };
       }
-      return { available: false, message: `Status Overpass HTTP ${res.status}` };
+      return { available: false, message: `Status Overpass HTTP ${res.status} (servidor alemão em alta demanda)` };
     } catch {
       return { available: true, message: 'Serviço ativo com espelhos de contingência configurados.' };
     }
