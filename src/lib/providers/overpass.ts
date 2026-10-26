@@ -13,8 +13,13 @@ export class OverpassOsmProvider implements BusinessProvider {
   async checkHealth(): Promise<ProviderHealth> {
     try {
       const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 4000);
-      const res = await fetch('https://overpass-api.de/api/status', { signal: controller.signal });
+      const timeout = setTimeout(() => controller.abort(), 6000);
+      const res = await fetch('https://overpass-api.de/api/status', {
+        headers: {
+          'User-Agent': 'VisionSolutions-B2BLeadHunter/2.0 (contato@visionsolutions.com.br)',
+        },
+        signal: controller.signal,
+      });
       clearTimeout(timeout);
 
       if (res.ok) {
