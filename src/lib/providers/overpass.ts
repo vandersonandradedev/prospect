@@ -1,4 +1,5 @@
 import { BusinessProvider, ProviderHealth, RawBusinessLead } from './types';
+import { getStateByUf } from '@/lib/constants/states';
 
 export class OverpassOsmProvider implements BusinessProvider {
   id = 'OPENSTREETMAP_OVERPASS' as const;
@@ -6,8 +7,9 @@ export class OverpassOsmProvider implements BusinessProvider {
   description = 'Base territorial aberta com coordenadas reais, telefones comerciais e endereços físicos verificáveis.';
 
   private readonly OVERPASS_SERVERS = [
-    'https://overpass-api.de/api/interpreter',
     'https://overpass.kumi.systems/api/interpreter',
+    'https://overpass-api.de/api/interpreter',
+    'https://lz4.overpass-api.de/api/interpreter',
   ];
 
   async checkHealth(): Promise<ProviderHealth> {
@@ -62,32 +64,35 @@ export class OverpassOsmProvider implements BusinessProvider {
     const { category, city, state, maxResults } = params;
     const limit = Math.min(maxResults || 20, 50);
 
+    const stateObj = getStateByUf(state);
+    const stateName = stateObj?.name || state;
+
     // 1. Tentar busca rápida de POIs via Nominatim (responde em < 1s)
     try {
       const catLower = category.toLowerCase().trim();
       const nomQueries = [
+        `${category}, ${city}, ${stateName}, Brasil`,
+        `${category} em ${city}, ${stateName}`,
         `${category}, ${city}, ${state}, Brasil`,
-        `${category} em ${city}, ${state}`,
-        `${category}, ${city}`,
       ];
 
       if (catLower.includes('dark kitchen')) {
-        nomQueries.push(`restaurante delivery, ${city}, ${state}, Brasil`);
-        nomQueries.push(`lanchonete, ${city}, ${state}, Brasil`);
+        nomQueries.push(`restaurante delivery, ${city}, ${stateName}, Brasil`);
+        nomQueries.push(`lanchonete, ${city}, ${stateName}, Brasil`);
       } else if (catLower.includes('software') || catLower.includes('fiscal')) {
-        nomQueries.push(`informatica, ${city}, ${state}, Brasil`);
-        nomQueries.push(`tecnologia, ${city}, ${state}, Brasil`);
-        nomQueries.push(`comercio, ${city}, ${state}, Brasil`);
+        nomQueries.push(`informatica, ${city}, ${stateName}, Brasil`);
+        nomQueries.push(`tecnologia, ${city}, ${stateName}, Brasil`);
+        nomQueries.push(`comercio, ${city}, ${stateName}, Brasil`);
       } else if (catLower.includes('oficina') || catLower.includes('mecanic') || catLower.includes('automotivo')) {
-        nomQueries.push(`oficina, ${city}, ${state}, Brasil`);
-        nomQueries.push(`auto pecas, ${city}, ${state}, Brasil`);
+        nomQueries.push(`oficina, ${city}, ${stateName}, Brasil`);
+        nomQueries.push(`auto pecas, ${city}, ${stateName}, Brasil`);
       } else if (catLower.includes('pizz')) {
-        nomQueries.push(`pizzaria, ${city}, ${state}, Brasil`);
+        nomQueries.push(`pizzaria, ${city}, ${stateName}, Brasil`);
       } else if (catLower.includes('hamburg') || catLower.includes('burger')) {
-        nomQueries.push(`hamburgueria, ${city}, ${state}, Brasil`);
-        nomQueries.push(`lanchonete, ${city}, ${state}, Brasil`);
+        nomQueries.push(`hamburgueria, ${city}, ${stateName}, Brasil`);
+        nomQueries.push(`lanchonete, ${city}, ${stateName}, Brasil`);
       } else if (catLower.includes('acai') || catLower.includes('açaí')) {
-        nomQueries.push(`sorveteria, ${city}, ${state}, Brasil`);
+        nomQueries.push(`sorveteria, ${city}, ${stateName}, Brasil`);
       }
 
       for (const queryStr of nomQueries) {
@@ -116,6 +121,16 @@ export class OverpassOsmProvider implements BusinessProvider {
               if (!name) continue;
 
               const addr = item.address || {};
+              // Validar que o estado corresponde à UF pesquisada quando disponível
+              const itemState = addr.state || '';
+              if (itemState && stateName) {
+                const s1 = itemState.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+                const s2 = stateName.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+                if (!s1.includes(s2) && !s2.includes(s1)) {
+                  continue;
+                }
+              }
+
               const road = addr.road || addr.pedestrian || addr.street || '';
               const houseNumber = addr.house_number || '';
               const suburb = addr.suburb || addr.neighbourhood || addr.district || '';
@@ -142,7 +157,7 @@ export class OverpassOsmProvider implements BusinessProvider {
                 category: extra.cuisine || item.type || category,
                 address,
                 city: addr.city || addr.town || addr.municipality || city,
-                state: addr.state || state,
+                state: stateObj?.uf || state,
                 phone: rawPhone,
                 website: rawWebsite,
                 email: rawEmail,
@@ -168,17 +183,19 @@ export class OverpassOsmProvider implements BusinessProvider {
       console.warn('Consulta direta Nominatim falhou, tentando espelhos Overpass:', nomErr);
     }
 
-    // 2. Se Nominatim não retornou, obter coordenadas aproximadas da cidade
-    const geocodeUrl = `https://nominatim.openstreetmap.org/search?city=${encodeURIComponent(
-      city
-    )}&state=${encodeURIComponent(state)}&country=Brazil&format=json&limit=1`;
+    // 2. Se Nominatim não retornou, obter coordenadas exatas da cidade
+    let lat = stateObj?.capitalLat ?? -23.5505;
+    let lon = stateObj?.capitalLon ?? -46.6333;
+    let geocodeSuccess = false;
 
-    let lat = -23.5505;
-    let lon = -46.6333;
+    // Tentativa A: busca com nome completo do estado
+    const geocodeUrl = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
+      `${city}, ${stateName}, Brasil`
+    )}&format=json&limit=1`;
 
     try {
       const geoController = new AbortController();
-      const geoTimeout = setTimeout(() => geoController.abort(), 3000);
+      const geoTimeout = setTimeout(() => geoController.abort(), 4000);
       const geoRes = await fetch(geocodeUrl, {
         headers: { 'User-Agent': 'VisionSolutions-B2BLeadHunter/2.0 (contato@visionsolutions.com.br)' },
         signal: geoController.signal,
@@ -190,10 +207,39 @@ export class OverpassOsmProvider implements BusinessProvider {
         if (geoData && geoData.length > 0) {
           lat = parseFloat(geoData[0].lat);
           lon = parseFloat(geoData[0].lon);
+          geocodeSuccess = true;
         }
       }
-    } catch {
-      // Coordenadas aproximadas
+    } catch (e) {
+      console.warn('Geocodificação inicial falhou para:', city, stateName, e);
+    }
+
+    // Tentativa B: busca estruturada se a primeira não encontrou
+    if (!geocodeSuccess) {
+      try {
+        const structuredUrl = `https://nominatim.openstreetmap.org/search?city=${encodeURIComponent(
+          city
+        )}&state=${encodeURIComponent(stateName)}&country=Brazil&format=json&limit=1`;
+
+        const geoController2 = new AbortController();
+        const geoTimeout2 = setTimeout(() => geoController2.abort(), 4000);
+        const geoRes2 = await fetch(structuredUrl, {
+          headers: { 'User-Agent': 'VisionSolutions-B2BLeadHunter/2.0 (contato@visionsolutions.com.br)' },
+          signal: geoController2.signal,
+        });
+        clearTimeout(geoTimeout2);
+
+        if (geoRes2.ok) {
+          const geoData2 = await geoRes2.json();
+          if (geoData2 && geoData2.length > 0) {
+            lat = parseFloat(geoData2[0].lat);
+            lon = parseFloat(geoData2[0].lon);
+            geocodeSuccess = true;
+          }
+        }
+      } catch (e2) {
+        console.warn('Geocodificação estruturada falhou para:', city, e2);
+      }
     }
 
     // 3. Mapeamento inteligente de tags OSM para categorias comerciais
@@ -303,8 +349,8 @@ export class OverpassOsmProvider implements BusinessProvider {
         name: name.trim(),
         category: tags.cuisine || tags.amenity || tags.shop || category,
         address,
-        city,
-        state,
+        city: tags['addr:city'] || city,
+        state: stateObj?.uf || state,
         phone: rawPhone,
         website: rawWebsite,
         email: tags['contact:email'] || tags.email || null,

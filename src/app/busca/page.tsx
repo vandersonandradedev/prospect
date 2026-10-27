@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   Search,
@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { Product, LeadSource } from '@/types';
 import { INITIAL_PRODUCTS } from '@/lib/constants/products';
+import { BRAZILIAN_STATES } from '@/lib/constants/states';
 
 export default function SearchPage() {
   const router = useRouter();
@@ -24,8 +25,11 @@ export default function SearchPage() {
   const [selectedProductId, setSelectedProductId] = useState<string>('prod-mesago');
   const [selectedCategory, setSelectedCategory] = useState<string>('Hamburgueria');
   const [customCategory, setCustomCategory] = useState<string>('');
-  const [city, setCity] = useState<string>('São Paulo');
   const [state, setState] = useState<string>('SP');
+  const [city, setCity] = useState<string>('São Paulo');
+  const [cities, setCities] = useState<string[]>([]);
+  const [citySearchFilter, setCitySearchFilter] = useState<string>('');
+  const [loadingCities, setLoadingCities] = useState<boolean>(false);
   const [maxResults, setMaxResults] = useState<number>(20);
   const [provider, setProvider] = useState<LeadSource>('OPENSTREETMAP_OVERPASS');
 
@@ -42,6 +46,45 @@ export default function SearchPage() {
       setSelectedCategory(currentProduct.targetSegments[0]);
     }
   }, [selectedProductId, currentProduct]);
+
+  // Carregar cidades oficiais do IBGE quando o estado selecionado muda
+  useEffect(() => {
+    let active = true;
+    setLoadingCities(true);
+    setCitySearchFilter('');
+
+    fetch(`/api/cities?uf=${state}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (!active) return;
+        if (data.cities && Array.isArray(data.cities) && data.cities.length > 0) {
+          setCities(data.cities);
+
+          // Se a cidade atual não pertence ao novo estado, selecionar a capital ou primeira cidade
+          if (!data.cities.includes(city)) {
+            const defaultCity = data.capital || data.cities[0];
+            setCity(defaultCity);
+          }
+        }
+      })
+      .catch((e) => {
+        console.error('Erro ao carregar cidades do IBGE:', e);
+      })
+      .finally(() => {
+        if (active) setLoadingCities(false);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [state]);
+
+  const filteredCities = useMemo(() => {
+    if (!citySearchFilter.trim()) return cities;
+    const term = citySearchFilter.toLowerCase();
+    const matches = cities.filter((c) => c.toLowerCase().includes(term));
+    return matches.length > 0 ? matches : cities;
+  }, [cities, citySearchFilter]);
 
   useEffect(() => {
     // Buscar status das fontes
@@ -162,38 +205,82 @@ export default function SearchPage() {
             />
           </div>
 
-          {/* 3. Localização (Cidade e Estado) */}
-          <div className="grid grid-cols-3 gap-3">
-            <div className="col-span-2">
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
-                3. Cidade
-              </label>
-              <div className="relative">
-                <MapPin className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
-                <input
-                  type="text"
-                  required
-                  placeholder="Ex: São Paulo, Curitiba, Campinas..."
-                  value={city}
-                  onChange={(e) => setCity(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500"
-                />
+          {/* 3. Localização (Estado e Cidade Real do IBGE) */}
+          <div className="space-y-3">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
+                  3. Estado (UF)
+                </label>
+                <select
+                  value={state}
+                  onChange={(e) => setState(e.target.value)}
+                  className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 font-semibold text-slate-800"
+                >
+                  {BRAZILIAN_STATES.map((s) => (
+                    <option key={s.uf} value={s.uf}>
+                      {s.uf} - {s.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="sm:col-span-2">
+                <div className="flex items-center justify-between mb-2">
+                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+                    Cidade Oficial (IBGE)
+                  </label>
+                  <span className="text-[11px] text-slate-500 font-medium">
+                    {loadingCities ? (
+                      <span className="flex items-center gap-1 text-sky-600">
+                        <Loader2 className="w-3 h-3 animate-spin" /> Carregando municípios...
+                      </span>
+                    ) : (
+                      `${cities.length} municípios reais`
+                    )}
+                  </span>
+                </div>
+
+                <div className="relative">
+                  <MapPin className="w-4 h-4 text-slate-400 absolute left-3 top-2.5 z-10 pointer-events-none" />
+                  <select
+                    required
+                    value={city}
+                    onChange={(e) => setCity(e.target.value)}
+                    disabled={loadingCities || cities.length === 0}
+                    className="w-full pl-9 pr-3 py-2 text-sm border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 disabled:bg-slate-100 font-medium text-slate-900"
+                  >
+                    {filteredCities.map((cityName) => (
+                      <option key={cityName} value={cityName}>
+                        {cityName}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
             </div>
-            <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
-                Estado (UF)
-              </label>
-              <select
-                value={state}
-                onChange={(e) => setState(e.target.value)}
-                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500"
-              >
-                {['SP', 'RJ', 'MG', 'RS', 'PR', 'SC', 'BA', 'PE', 'CE', 'GO', 'DF', 'ES', 'MA', 'PA', 'MT', 'MS'].map((uf) => (
-                  <option key={uf} value={uf}>{uf}</option>
-                ))}
-              </select>
-            </div>
+
+            {/* Campo auxiliar de filtro rápido para estados com centenas de cidades */}
+            {cities.length > 15 && (
+              <div className="flex items-center gap-2">
+                <input
+                  type="text"
+                  placeholder={`Filtrar lista de cidades em ${state}... (ex: ${cities.slice(0, 3).join(', ')}...)`}
+                  value={citySearchFilter}
+                  onChange={(e) => setCitySearchFilter(e.target.value)}
+                  className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 bg-slate-50/50"
+                />
+                {citySearchFilter && (
+                  <button
+                    type="button"
+                    onClick={() => setCitySearchFilter('')}
+                    className="text-xs text-slate-500 hover:text-slate-800 px-2 py-1 border border-slate-200 rounded-md whitespace-nowrap"
+                  >
+                    Limpar filtro
+                  </button>
+                )}
+              </div>
+            )}
           </div>
 
           {/* 4. Fonte de Dados e Limite */}
