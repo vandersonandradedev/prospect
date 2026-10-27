@@ -31,7 +31,7 @@ export default function SearchPage() {
   const [citySearchFilter, setCitySearchFilter] = useState<string>('');
   const [loadingCities, setLoadingCities] = useState<boolean>(false);
   const [maxResults, setMaxResults] = useState<number>(20);
-  const [provider, setProvider] = useState<LeadSource>('OPENSTREETMAP_OVERPASS');
+  const [provider, setProvider] = useState<LeadSource>('GOOGLE_PLACES_API');
 
   const [sourcesHealth, setSourcesHealth] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -87,11 +87,22 @@ export default function SearchPage() {
   }, [cities, citySearchFilter]);
 
   useEffect(() => {
-    // Buscar status das fontes
+    // Buscar status das fontes e auto-selecionar a fonte operacional mais rica
     fetch('/api/sources/health')
       .then((res) => res.json())
       .then((data) => {
-        if (data.sources) setSourcesHealth(data.sources);
+        if (data.sources) {
+          setSourcesHealth(data.sources);
+          const google = data.sources.find((s: any) => s.id === 'GOOGLE_PLACES_API');
+          const docker = data.sources.find((s: any) => s.id === 'GMAPS_SCRAPER_KIT');
+          if (google?.available) {
+            setProvider('GOOGLE_PLACES_API');
+          } else if (docker?.available) {
+            setProvider('GMAPS_SCRAPER_KIT');
+          } else {
+            setProvider('OPENSTREETMAP_OVERPASS');
+          }
+        }
       })
       .catch((e) => console.error('Erro ao verificar fontes:', e));
   }, []);
@@ -294,9 +305,9 @@ export default function SearchPage() {
                 onChange={(e) => setProvider(e.target.value as LeadSource)}
                 className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 font-medium text-slate-800"
               >
-                <option value="OPENSTREETMAP_OVERPASS">OpenStreetMap Overpass (Aberta & Imediata)</option>
+                <option value="GOOGLE_PLACES_API">Google Places API Oficial (⭐ Telefones, Sites e Avaliações)</option>
                 <option value="GMAPS_SCRAPER_KIT">Google Maps Scraper Kit (Docker Local)</option>
-                <option value="GOOGLE_PLACES_API">Google Places API (Oficial GCP)</option>
+                <option value="OPENSTREETMAP_OVERPASS">OpenStreetMap Overpass (Aberta / Coleta Base)</option>
               </select>
             </div>
             <div>

@@ -95,8 +95,19 @@ export async function enrichBusinessWebsite(websiteUrl: string): Promise<Enrichm
     const html = await res.text();
     const htmlLower = html.toLowerCase();
 
-    // 1. Detectar WhatsApp
-    if (htmlLower.includes('wa.me') || htmlLower.includes('api.whatsapp.com') || htmlLower.includes('whatsapp')) {
+    // 1. Detectar WhatsApp e Extrair Telefone Comercial do Link
+    const waPhoneMatch = html.match(/(?:wa\.me\/|api\.whatsapp\.com\/send\?phone=)(?:\+?55)?([1-9]{2}[9]?[0-9]{8})/);
+    if (waPhoneMatch && waPhoneMatch[1]) {
+      result.extractedPhone = waPhoneMatch[1];
+      result.hasWhatsAppLink = true;
+      result.evidences.push({
+        id: `ev-${Date.now()}-wa`,
+        category: 'CANAL_WHATSAPP',
+        description: `Canal oficial de WhatsApp comercial identificado: ${waPhoneMatch[1]}`,
+        evidenceUrl: formattedUrl,
+        detectedAt: new Date().toISOString(),
+      });
+    } else if (htmlLower.includes('wa.me') || htmlLower.includes('api.whatsapp.com') || htmlLower.includes('whatsapp')) {
       result.hasWhatsAppLink = true;
       result.evidences.push({
         id: `ev-${Date.now()}-wa`,
@@ -105,6 +116,14 @@ export async function enrichBusinessWebsite(websiteUrl: string): Promise<Enrichm
         evidenceUrl: formattedUrl,
         detectedAt: new Date().toISOString(),
       });
+    }
+
+    // Extrair telefone padrão de tag tel:
+    if (!result.extractedPhone) {
+      const telMatch = html.match(/href=["']tel:(?:\+?55)?([1-9]{2}[0-9]{8,9})["']/);
+      if (telMatch && telMatch[1]) {
+        result.extractedPhone = telMatch[1];
+      }
     }
 
     // 2. Detectar Cardápio Digital ou Pedidos Online

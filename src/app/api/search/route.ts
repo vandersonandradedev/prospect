@@ -3,6 +3,7 @@ import { CollectionJob, LeadSource } from '@/types';
 import { getProvider } from '@/lib/providers';
 import { deduplicateAndMerge } from '@/lib/deduplication';
 import { addAuditLog, getLeads, getProductById, saveJob, saveLead, updateJob } from '@/lib/db';
+import { enrichBusinessWebsite } from '@/lib/enrichment';
 
 export async function POST(req: NextRequest) {
   try {
@@ -13,7 +14,7 @@ export async function POST(req: NextRequest) {
       city,
       state,
       maxResults = 20,
-      provider: requestedProvider = 'OPENSTREETMAP_OVERPASS',
+      provider: requestedProvider = 'GOOGLE_PLACES_API',
     } = body;
 
     if (!category || !city || !state) {
@@ -45,10 +46,11 @@ export async function POST(req: NextRequest) {
     saveJob(job);
     addAuditLog('COLLECTION_JOB_STARTED', 'JOB', `Iniciado job ${job.id} para ${category} em ${city}-${state}`, job.id);
 
-    // 2. Executar Coleta via Provedor com Fallback Automático Resiliente
+    // 2. Executar Coleta via Provedor com Fallback Inteligente entre Fontes
     let rawLeads: any[] = [];
     let effectiveProvider = requestedProvider as LeadSource;
     let fallbackNotice: string | null = null;
+    const hasGoogleKey = !!(process.env.GOOGLE_PLACES_API_KEY || process.env.GOOGLE_MAPS_API_KEY);
 
     try {
       const providerInstance = getProvider(effectiveProvider);
@@ -59,31 +61,72 @@ export async function POST(req: NextRequest) {
         maxResults: Number(maxResults),
       });
     } catch (collectErr: any) {
-      // Se falhou no scraper local ou Google Places, tenta automaticamente o OpenStreetMap
-      if (effectiveProvider !== 'OPENSTREETMAP_OVERPASS') {
-        console.warn(
-          `Provedor ${effectiveProvider} offline (${collectErr?.message}). Alternando automaticamente para OpenStreetMap.`
-        );
-        effectiveProvider = 'OPENSTREETMAP_OVERPASS';
-        fallbackNotice = `Provedor ${requestedProvider} offline. Busca realizada via OpenStreetMap.`;
+      console.warn(`Provedor ${effectiveProvider} falhou (${collectErr?.message}).`);
+    }
 
+    // Se o provedor principal retornou 0 resultados ou falhou, tenta automaticamente fontes alternativas
+    if (rawLeads.length === 0) {
+      if (effectiveProvider !== 'GOOGLE_PLACES_API' && hasGoogleKey) {
         try {
-          const fallbackProvider = getProvider('OPENSTREETMAP_OVERPASS');
-          rawLeads = await fallbackProvider.searchBusinesses({
+          console.log(`Fonte ${effectiveProvider} sem resultados. Tentando Google Places API oficial...`);
+          const googleProvider = getProvider('GOOGLE_PLACES_API');
+          rawLeads = await googleProvider.searchBusinesses({
             category,
             city,
             state,
             maxResults: Number(maxResults),
           });
-        } catch {
-          rawLeads = [];
+          if (rawLeads.length > 0) {
+            effectiveProvider = 'GOOGLE_PLACES_API';
+            fallbackNotice = 'Busca complementada via Google Places API oficial com dados atualizados.';
+          }
+        } catch (gErr: any) {
+          console.warn('Fallback Google Places falhou:', gErr);
         }
-      } else {
-        rawLeads = [];
+      }
+
+      if (rawLeads.length === 0 && effectiveProvider !== 'OPENSTREETMAP_OVERPASS') {
+        try {
+          console.log(`Tentando OpenStreetMap para ${city}-${state}...`);
+          const osmProvider = getProvider('OPENSTREETMAP_OVERPASS');
+          rawLeads = await osmProvider.searchBusinesses({
+            category,
+            city,
+            state,
+            maxResults: Number(maxResults),
+          });
+          if (rawLeads.length > 0) {
+            effectiveProvider = 'OPENSTREETMAP_OVERPASS';
+            fallbackNotice = `Provedor ${requestedProvider} sem dados. Busca realizada via OpenStreetMap.`;
+          }
+        } catch (osmErr: any) {
+          console.warn('Fallback OpenStreetMap falhou:', osmErr);
+        }
       }
     }
 
-    // 3. Deduplicar e Ingerir
+    // 3. Enriquecimento Rápido Automático de Contatos para Leads com Site e sem Telefone
+    if (rawLeads.length > 0) {
+      await Promise.allSettled(
+        rawLeads.slice(0, 10).map(async (lead) => {
+          if (lead.website && !lead.phone) {
+            try {
+              const enrich = await enrichBusinessWebsite(lead.website);
+              if (enrich.extractedPhone) {
+                lead.phone = enrich.extractedPhone;
+              }
+              if (enrich.extractedEmail && !lead.email) {
+                lead.email = enrich.extractedEmail;
+              }
+            } catch {
+              // Silencioso em caso de timeout
+            }
+          }
+        })
+      );
+    }
+
+    // 4. Deduplicar e Ingerir
     const currentLeads = getLeads();
     const { mergedLeads, newCount, updatedCount } = deduplicateAndMerge(
       currentLeads,

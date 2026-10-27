@@ -242,9 +242,10 @@ export class OverpassOsmProvider implements BusinessProvider {
       }
     }
 
-    // 3. Mapeamento inteligente de tags OSM para categorias comerciais
+    // 3. Mapeamento inteligente de tags OSM para categorias comerciais com suporte a node e way
     const catLower = category.toLowerCase();
-    let amenityFilter = '["amenity"~"restaurant|fast_food|cafe|bar"]';
+    const radius = 8000;
+    let filterClause = '';
 
     if (
       catLower.includes('oficina') ||
@@ -253,13 +254,12 @@ export class OverpassOsmProvider implements BusinessProvider {
       catLower.includes('moto') ||
       catLower.includes('carro')
     ) {
-      amenityFilter = '["shop"~"car_repair|motorcycle_repair|tyres|car_parts"]';
-    } else if (catLower.includes('pizzaria') || catLower.includes('pizza')) {
-      amenityFilter = '["cuisine"~"pizza"]';
-    } else if (catLower.includes('hamburg') || catLower.includes('burger')) {
-      amenityFilter = '["cuisine"~"burger"]';
-    } else if (catLower.includes('açaí') || catLower.includes('acai') || catLower.includes('sorvete')) {
-      amenityFilter = '["amenity"~"ice_cream|cafe"]';
+      filterClause = `
+        node["shop"~"car_repair|motorcycle_repair|tyres|car_parts"](around:${radius},${lat},${lon})["name"];
+        way["shop"~"car_repair|motorcycle_repair|tyres|car_parts"](around:${radius},${lat},${lon})["name"];
+        node["craft"~"car_repair|motorcycle_repair"](around:${radius},${lat},${lon})["name"];
+        way["craft"~"car_repair|motorcycle_repair"](around:${radius},${lat},${lon})["name"];
+      `;
     } else if (
       catLower.includes('varejo') ||
       catLower.includes('loja') ||
@@ -267,15 +267,22 @@ export class OverpassOsmProvider implements BusinessProvider {
       catLower.includes('fiscal') ||
       catLower.includes('distribuidora')
     ) {
-      amenityFilter = '["shop"]';
+      filterClause = `
+        node["shop"](around:${radius},${lat},${lon})["name"];
+        way["shop"](around:${radius},${lat},${lon})["name"];
+      `;
+    } else {
+      // Alimentação (Restaurantes, Hamburguerias, Pizzarias, Lanchonetes, Cafés)
+      filterClause = `
+        node["amenity"~"restaurant|fast_food|cafe|bar"](around:${radius},${lat},${lon})["name"];
+        way["amenity"~"restaurant|fast_food|cafe|bar"](around:${radius},${lat},${lon})["name"];
+      `;
     }
 
-    // Raio otimizado (4000m) para resposta em poucos segundos
-    const radius = 4000;
     const overpassQuery = `
-      [out:json][timeout:8];
+      [out:json][timeout:12];
       (
-        node${amenityFilter}(around:${radius},${lat},${lon})["name"];
+        ${filterClause}
       );
       out center ${limit};
     `;
@@ -332,7 +339,14 @@ export class OverpassOsmProvider implements BusinessProvider {
       const elementLon = el.lon ?? el.center?.lon ?? lon;
 
       // Extrair telefone comercial publicado
-      const rawPhone = tags['contact:phone'] || tags['contact:mobile'] || tags.phone || tags.mobile || null;
+      const rawPhone =
+        tags['contact:whatsapp'] ||
+        tags.whatsapp ||
+        tags['contact:phone'] ||
+        tags['contact:mobile'] ||
+        tags.phone ||
+        tags.mobile ||
+        null;
 
       // Extrair site ou rede comercial pública
       const rawWebsite =

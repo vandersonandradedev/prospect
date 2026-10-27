@@ -21,7 +21,7 @@ describe('Search API Route', () => {
     const data = await res.json();
     expect(res.status).toBe(200);
     expect(data.success).toBe(true);
-  }, 15000);
+  }, 60000);
 
   it('should gracefully fallback when local scraper is offline without 502 error', async () => {
     const req = new NextRequest('http://localhost:3000/api/search', {
@@ -41,5 +41,5 @@ describe('Search API Route', () => {
     const data = await res.json();
     expect(res.status).toBe(200);
     expect(data.success).toBe(true);
-  }, 15000);
+  }, 60000);
 });
