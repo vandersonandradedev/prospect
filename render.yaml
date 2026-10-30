@@ -70,7 +70,9 @@ services:
       - key: AUTHENTICATION_API_KEY
         value: vision_evolution_secret_key_2026
       - key: CONFIG_SESSION_PHONE_CLIENT
-        value: Vision Solutions B2B
+        value: Chrome
+      - key: CONFIG_SESSION_PHONE_NAME
+        value: Chrome
       - key: DATABASE_PROVIDER
         value: postgresql
       - key: DATABASE_CONNECTION_URI

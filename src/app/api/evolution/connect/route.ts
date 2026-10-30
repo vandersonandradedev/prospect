@@ -6,28 +6,48 @@ export const dynamic = 'force-dynamic';
 export async function POST(req: NextRequest) {
   try {
     let forceRestart = false;
+    let phoneNumber: string | undefined;
     try {
       const body = await req.json();
       if (body?.forceRestart) forceRestart = true;
+      if (body?.phoneNumber && typeof body.phoneNumber === 'string') {
+        phoneNumber = body.phoneNumber.trim();
+      }
     } catch {}
 
     const config = getEvolutionConfig();
-    const status = await evolutionClient.getInstanceStatus();
 
-    // 1. Se a instância não existe ainda, cria com QR Code ativado
-    if (!status.exists) {
-      const createRes = await evolutionClient.createInstance();
+    // 1. Se solicitou reinício forçado/limpeza de sessão, apaga e recria do zero
+    if (forceRestart) {
+      await evolutionClient.deleteInstance(config.instanceName).catch(() => null);
+      const createRes = await evolutionClient.createInstance(config.instanceName);
+      let connectRes = await evolutionClient.getConnectQrCode(config.instanceName, phoneNumber);
       return NextResponse.json({
-        success: createRes.success,
-        message: createRes.message,
-        qrCodeBase64: createRes.qrCodeBase64,
-        pairingCode: createRes.pairingCode,
+        success: true,
+        message: 'Instância reiniciada e sessão limpa com sucesso.',
+        qrCodeBase64: connectRes.qrCodeBase64 || createRes.qrCodeBase64,
+        pairingCode: connectRes.pairingCode || createRes.pairingCode,
         state: 'connecting',
       });
     }
 
-    // 2. Se já estiver aberta/conectada e não solicitou reinício forçado
-    if (status.state === 'open' && !forceRestart) {
+    const status = await evolutionClient.getInstanceStatus();
+
+    // 2. Se a instância não existe ainda, cria
+    if (!status.exists) {
+      const createRes = await evolutionClient.createInstance(config.instanceName);
+      let connectRes = await evolutionClient.getConnectQrCode(config.instanceName, phoneNumber);
+      return NextResponse.json({
+        success: true,
+        message: createRes.message,
+        qrCodeBase64: connectRes.qrCodeBase64 || createRes.qrCodeBase64,
+        pairingCode: connectRes.pairingCode || createRes.pairingCode,
+        state: 'connecting',
+      });
+    }
+
+    // 3. Se já estiver aberta/conectada
+    if (status.state === 'open') {
       return NextResponse.json({
         success: true,
         state: 'open',
@@ -35,29 +55,28 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // 3. Se forçado ou se for atualização de QR Code, tenta obter ou reiniciar
-    let connectRes = await evolutionClient.getConnectQrCode();
+    // 4. Obtém o QR Code ou Pairing Code vivo
+    let connectRes = await evolutionClient.getConnectQrCode(config.instanceName, phoneNumber);
 
-    if (forceRestart || !connectRes.qrCodeBase64) {
-      const restartRes = await evolutionClient.restartInstance();
-      if (restartRes.qrCodeBase64) {
+    if (!connectRes.qrCodeBase64 && !connectRes.pairingCode) {
+      const restartRes = await evolutionClient.restartInstance(config.instanceName);
+      if (restartRes.qrCodeBase64 || restartRes.pairingCode) {
         connectRes = {
           state: 'connecting',
           qrCodeBase64: restartRes.qrCodeBase64,
           pairingCode: restartRes.pairingCode,
         };
       } else {
-        // Fallback: se restart não retornou QR imediato, tenta nova chamada de connect
-        const freshConnect = await evolutionClient.getConnectQrCode();
-        if (freshConnect.qrCodeBase64) {
+        const freshConnect = await evolutionClient.getConnectQrCode(config.instanceName, phoneNumber);
+        if (freshConnect.qrCodeBase64 || freshConnect.pairingCode) {
           connectRes = freshConnect;
         }
       }
     }
 
-    // 4. Configura webhook para garantir recebimento de mensagens quando conectar
+    // 5. Configura webhook para garantir recebimento de mensagens quando conectar
     if (config.webhookUrl) {
-      evolutionClient.configureWebhook(config.webhookUrl).catch(() => null);
+      evolutionClient.configureWebhook(config.webhookUrl, config.instanceName).catch(() => null);
     }
 
     return NextResponse.json({

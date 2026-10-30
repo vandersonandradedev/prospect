@@ -31,7 +31,8 @@ services:
       - SERVER_PORT=8082
       - SERVER_TYPE=http
       - AUTHENTICATION_API_KEY=vision_evolution_secret_key_2026
-      - CONFIG_SESSION_PHONE_CLIENT=Vision Solutions B2B
+      - CONFIG_SESSION_PHONE_CLIENT=Chrome
+      - CONFIG_SESSION_PHONE_NAME=Chrome
       - DATABASE_PROVIDER=postgresql
       - DATABASE_CONNECTION_URI=postgresql://evolution:evolution_password_2026@postgres:5432/evolution?schema=public
       - DATABASE_CONNECTION_CLIENT_NAME=evolution_v2

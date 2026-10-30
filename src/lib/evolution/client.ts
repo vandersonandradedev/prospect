@@ -203,7 +203,10 @@ export class EvolutionClient {
     }
   }
 
-  async getConnectQrCode(instanceName = this.config.instanceName): Promise<{
+  async getConnectQrCode(
+    instanceName = this.config.instanceName,
+    phoneNumber?: string
+  ): Promise<{
     state: string;
     qrCodeBase64?: string;
     pairingCode?: string;
@@ -213,7 +216,12 @@ export class EvolutionClient {
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 12000);
 
-      const res = await fetch(`${this.config.serverUrl}/instance/connect/${instanceName}`, {
+      const formattedNumber = phoneNumber ? formatWhatsAppNumber(phoneNumber) : undefined;
+      const url = formattedNumber
+        ? `${this.config.serverUrl}/instance/connect/${instanceName}?number=${encodeURIComponent(formattedNumber)}`
+        : `${this.config.serverUrl}/instance/connect/${instanceName}`;
+
+      const res = await fetch(url, {
         headers: this.getHeaders(),
         signal: controller.signal,
       });
