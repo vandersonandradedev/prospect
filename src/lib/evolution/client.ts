@@ -1,10 +1,21 @@
 import { EvolutionSettings } from '@/types';
+import { getStoredEvolutionConfig } from '@/lib/db';
 
 export function getEvolutionConfig(): EvolutionSettings {
+  let stored: { serverUrl?: string; apiKey?: string; instanceName?: string } | undefined;
+  try {
+    stored = getStoredEvolutionConfig();
+  } catch {}
+
   return {
-    serverUrl: (process.env.EVOLUTION_API_URL || 'http://localhost:8082').replace(/\/$/, ''),
-    apiKey: process.env.EVOLUTION_API_KEY || 'vision_evolution_secret_key_2026',
-    instanceName: process.env.EVOLUTION_INSTANCE_NAME || 'VisionSolutions',
+    serverUrl: (
+      stored?.serverUrl ||
+      process.env.EVOLUTION_API_URL ||
+      process.env.NEXT_PUBLIC_EVOLUTION_URL ||
+      'http://localhost:8082'
+    ).replace(/\/$/, ''),
+    apiKey: stored?.apiKey || process.env.EVOLUTION_API_KEY || 'vision_evolution_secret_key_2026',
+    instanceName: stored?.instanceName || process.env.EVOLUTION_INSTANCE_NAME || 'VisionSolutions',
     autoOutreachEnabled: process.env.AUTO_OUTREACH_ENABLED !== 'false',
     autoReplyEnabled: process.env.AUTO_REPLY_ENABLED !== 'false',
     webhookUrl: process.env.EVOLUTION_WEBHOOK_URL,

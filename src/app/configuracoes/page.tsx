@@ -28,6 +28,9 @@ export default function SettingsPage() {
   const [evolutionStatus, setEvolutionStatus] = useState<any>(null);
   const [connectingEvolution, setConnectingEvolution] = useState(false);
   const [connectionError, setConnectionError] = useState<string | null>(null);
+  const [customUrl, setCustomUrl] = useState('');
+  const [savingUrl, setSavingUrl] = useState(false);
+  const [saveUrlResult, setSaveUrlResult] = useState<string | null>(null);
   const [testPhone, setTestPhone] = useState('');
   const [sendingTest, setSendingTest] = useState(false);
   const [testResult, setTestResult] = useState<string | null>(null);
@@ -52,11 +55,49 @@ export default function SettingsPage() {
 
       if (srcData.sources) setSources(srcData.sources);
       if (supData.suppressionList) setSuppressionList(supData.suppressionList);
-      if (evoData) setEvolutionStatus(evoData);
+      if (evoData) {
+        setEvolutionStatus(evoData);
+        if (evoData.config?.serverUrl) {
+          setCustomUrl((prev) => prev || evoData.config.serverUrl);
+        }
+      }
     } catch (e) {
       console.error(e);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleSaveEvolutionUrl = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!customUrl) return;
+    setSavingUrl(true);
+    setSaveUrlResult(null);
+    setConnectionError(null);
+    try {
+      const res = await fetch('/api/evolution/config', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ serverUrl: customUrl }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setSaveUrlResult(data.message);
+        setEvolutionStatus((prev: any) => ({
+          ...prev,
+          available: data.available,
+          config: { ...(prev?.config || {}), serverUrl: data.serverUrl },
+        }));
+        if (data.available) {
+          handleConnectEvolution(false);
+        }
+      } else {
+        setSaveUrlResult(`❌ ${data.error || 'Erro ao salvar'}`);
+      }
+    } catch (err: any) {
+      setSaveUrlResult(`❌ Erro: ${err?.message}`);
+    } finally {
+      setSavingUrl(false);
     }
   };
 
@@ -264,12 +305,36 @@ export default function SettingsPage() {
               </div>
             </div>
 
-            <div>
-              <div className="text-xs font-bold text-slate-700">Servidor Evolution API</div>
-              <div className="text-xs font-mono text-slate-600 mt-0.5">
-                {evolutionStatus?.config?.serverUrl || 'http://localhost:8082'}
+            <form onSubmit={handleSaveEvolutionUrl} className="space-y-1.5 bg-white p-3 rounded-lg border border-slate-200">
+              <label className="text-xs font-bold text-slate-800 flex items-center justify-between">
+                <span>URL do Servidor Evolution API</span>
+                <span className="text-[10px] text-sky-600 font-normal">Túnel ou Nuvem</span>
+              </label>
+              <div className="flex gap-1.5">
+                <input
+                  type="text"
+                  placeholder="ex: https://sua-url.loca.lt ou http://localhost:8082"
+                  value={customUrl}
+                  onChange={(e) => setCustomUrl(e.target.value)}
+                  className="flex-1 px-2.5 py-1.5 border border-slate-300 rounded-lg text-xs font-mono bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-500/20"
+                />
+                <button
+                  type="submit"
+                  disabled={savingUrl || !customUrl}
+                  className="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-xs font-semibold disabled:opacity-50 transition-colors"
+                >
+                  {savingUrl ? 'Salvando...' : 'Salvar URL'}
+                </button>
               </div>
-            </div>
+              {saveUrlResult && (
+                <div className="text-[11px] font-medium text-slate-600 mt-1">
+                  {saveUrlResult}
+                </div>
+              )}
+              <p className="text-[10px] text-slate-400">
+                Se o backend roda na nuvem (Render/Vercel), informe o endereço do túnel do Docker da sua máquina (ex: gerado por localtunnel na 8082).
+              </p>
+            </form>
 
             <div>
               <div className="text-xs font-bold text-slate-700">Webhook de Respostas Automáticas</div>

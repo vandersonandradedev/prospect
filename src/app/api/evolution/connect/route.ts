@@ -67,6 +67,11 @@ export async function POST(req: NextRequest) {
       pairingCode: connectRes.pairingCode,
     });
   } catch (error: any) {
-    return NextResponse.json({ error: error?.message || 'Erro ao conectar instância na Evolution API' }, { status: 500 });
+    const config = getEvolutionConfig();
+    const isFetchFailed = error?.message?.includes('fetch failed') || error?.cause?.code === 'ECONNREFUSED';
+    const friendlyError = isFetchFailed
+      ? `Servidor Evolution API inacessível em "${config.serverUrl}". Como o sistema roda na nuvem (Vercel/Render), ele não alcança localhost diretamente. Insira a URL do túnel localtunnel/ngrok no campo abaixo e clique em Salvar.`
+      : (error?.message || 'Erro ao conectar instância na Evolution API');
+    return NextResponse.json({ error: friendlyError }, { status: 500 });
   }
 }

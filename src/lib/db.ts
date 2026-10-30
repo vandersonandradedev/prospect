@@ -17,6 +17,11 @@ interface DatabaseSchema {
   jobs: CollectionJob[];
   suppressionList: SuppressionEntry[];
   auditLogs: AuditLogEntry[];
+  evolutionConfig?: {
+    serverUrl?: string;
+    apiKey?: string;
+    instanceName?: string;
+  };
 }
 
 const isServerless = Boolean(
@@ -411,4 +416,16 @@ export function getDashboardMetrics(): DashboardMetrics {
     bySource,
     failedJobsCount,
   };
+}
+
+export function getStoredEvolutionConfig(): { serverUrl?: string; apiKey?: string; instanceName?: string } | undefined {
+  const db = ensureDatabase();
+  return db.evolutionConfig;
+}
+
+export function saveStoredEvolutionConfig(config: { serverUrl?: string; apiKey?: string; instanceName?: string }) {
+  const db = ensureDatabase();
+  db.evolutionConfig = { ...(db.evolutionConfig || {}), ...config };
+  saveDatabase(db);
+  return db.evolutionConfig;
 }
