@@ -1,0 +1,254 @@
+import { EvolutionSettings } from '@/types';
+
+export function getEvolutionConfig(): EvolutionSettings {
+  return {
+    serverUrl: (process.env.EVOLUTION_API_URL || 'http://localhost:8082').replace(/\/$/, ''),
+    apiKey: process.env.EVOLUTION_API_KEY || 'vision_evolution_secret_key_2026',
+    instanceName: process.env.EVOLUTION_INSTANCE_NAME || 'VisionSolutions',
+    autoOutreachEnabled: process.env.AUTO_OUTREACH_ENABLED !== 'false',
+    autoReplyEnabled: process.env.AUTO_REPLY_ENABLED !== 'false',
+    webhookUrl: process.env.EVOLUTION_WEBHOOK_URL,
+  };
+}
+
+export function formatWhatsAppNumber(phone: string): string {
+  const digits = phone.replace(/\D/g, '');
+  if (!digits) return '';
+
+  // Se já começa com 55 e tem 12 ou 13 dígitos
+  if (digits.startsWith('55') && (digits.length === 12 || digits.length === 13)) {
+    return digits;
+  }
+
+  // Se é número brasileiro com DDD (10 ou 11 dígitos, ex: 11988887777 ou 4133334444)
+  if (digits.length === 10 || digits.length === 11) {
+    return `55${digits}`;
+  }
+
+  return digits;
+}
+
+export class EvolutionClient {
+  private config: EvolutionSettings;
+
+  constructor(customConfig?: Partial<EvolutionSettings>) {
+    this.config = { ...getEvolutionConfig(), ...customConfig };
+  }
+
+  private getHeaders() {
+    return {
+      'Content-Type': 'application/json',
+      apikey: this.config.apiKey,
+    };
+  }
+
+  async checkHealth(): Promise<{ available: boolean; message: string; version?: string }> {
+    try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 4000);
+
+      const res = await fetch(`${this.config.serverUrl}/instance/fetchInstances`, {
+        headers: this.getHeaders(),
+        signal: controller.signal,
+      });
+      clearTimeout(timeout);
+
+      if (res.ok) {
+        return {
+          available: true,
+          message: 'Evolution API operacional e conectada.',
+        };
+      }
+
+      if (res.status === 401 || res.status === 403) {
+        return {
+          available: false,
+          message: 'Falha de autenticação na Evolution API (verifique a apikey).',
+        };
+      }
+
+      return {
+        available: false,
+        message: `Evolution API retornou status HTTP ${res.status}.`,
+      };
+    } catch (err: any) {
+      return {
+        available: false,
+        message: `Evolution API offline em ${this.config.serverUrl}. Verifique o contêiner Docker na porta 8082.`,
+      };
+    }
+  }
+
+  async getInstanceStatus(instanceName = this.config.instanceName): Promise<{
+    exists: boolean;
+    state: 'open' | 'connecting' | 'close' | 'unknown';
+    profileName?: string;
+    profilePictureUrl?: string;
+  }> {
+    try {
+      const res = await fetch(`${this.config.serverUrl}/instance/connectionState/${instanceName}`, {
+        headers: this.getHeaders(),
+      });
+
+      if (!res.ok) {
+        return { exists: false, state: 'unknown' };
+      }
+
+      const data = await res.json();
+      const state = (data?.instance?.state || data?.state || 'close').toLowerCase();
+
+      return {
+        exists: true,
+        state: state === 'open' ? 'open' : state === 'connecting' ? 'connecting' : 'close',
+      };
+    } catch {
+      return { exists: false, state: 'unknown' };
+    }
+  }
+
+  async createInstance(instanceName = this.config.instanceName): Promise<{
+    success: boolean;
+    qrCodeBase64?: string;
+    pairingCode?: string;
+    message?: string;
+  }> {
+    try {
+      const res = await fetch(`${this.config.serverUrl}/instance/create`, {
+        method: 'POST',
+        headers: this.getHeaders(),
+        body: JSON.stringify({
+          instanceName,
+          token: this.config.apiKey,
+          qrcode: true,
+          integration: 'WHATSAPP-BAILEYS',
+          reject_call: true,
+          msg_call: 'Atendimento automatizado Vision Solutions via mensagem.',
+        }),
+      });
+
+      const data = await res.json();
+      if (res.ok || res.status === 201) {
+        return {
+          success: true,
+          qrCodeBase64: data?.qrcode?.base64 || data?.base64,
+          pairingCode: data?.qrcode?.pairingCode,
+          message: 'Instância criada com sucesso.',
+        };
+      }
+
+      return {
+        success: false,
+        message: data?.response?.message || data?.message || 'Falha ao criar instância.',
+      };
+    } catch (err: any) {
+      return {
+        success: false,
+        message: err?.message || 'Erro ao comunicar com Evolution API.',
+      };
+    }
+  }
+
+  async getConnectQrCode(instanceName = this.config.instanceName): Promise<{
+    state: string;
+    qrCodeBase64?: string;
+    pairingCode?: string;
+  }> {
+    try {
+      const res = await fetch(`${this.config.serverUrl}/instance/connect/${instanceName}`, {
+        headers: this.getHeaders(),
+      });
+
+      if (!res.ok) {
+        return { state: 'close' };
+      }
+
+      const data = await res.json();
+      return {
+        state: data?.instance?.state || data?.state || 'close',
+        qrCodeBase64: data?.base64 || data?.qrcode?.base64,
+        pairingCode: data?.pairingCode || data?.qrcode?.pairingCode,
+      };
+    } catch {
+      return { state: 'close' };
+    }
+  }
+
+  async configureWebhook(
+    webhookUrl: string,
+    instanceName = this.config.instanceName
+  ): Promise<{ success: boolean; message?: string }> {
+    try {
+      const res = await fetch(`${this.config.serverUrl}/webhook/set/${instanceName}`, {
+        method: 'POST',
+        headers: this.getHeaders(),
+        body: JSON.stringify({
+          webhook: {
+            enabled: true,
+            url: webhookUrl,
+            byEvents: false,
+            base64: false,
+            events: [
+              'MESSAGES_UPSERT',
+              'MESSAGES_UPDATE',
+              'CONNECTION_UPDATE',
+            ],
+          },
+        }),
+      });
+
+      if (res.ok) {
+        return { success: true };
+      }
+      const data = await res.json();
+      return { success: false, message: data?.message || 'Falha ao salvar webhook.' };
+    } catch (err: any) {
+      return { success: false, message: err?.message };
+    }
+  }
+
+  async sendTextMessage(params: {
+    phone: string;
+    text: string;
+    instanceName?: string;
+  }): Promise<{ success: boolean; messageId?: string; error?: string }> {
+    const { phone, text, instanceName = this.config.instanceName } = params;
+    const cleanNumber = formatWhatsAppNumber(phone);
+
+    if (!cleanNumber || cleanNumber.length < 10) {
+      return { success: false, error: 'Número de telefone inválido para envio via WhatsApp.' };
+    }
+
+    try {
+      const res = await fetch(`${this.config.serverUrl}/message/sendText/${instanceName}`, {
+        method: 'POST',
+        headers: this.getHeaders(),
+        body: JSON.stringify({
+          number: cleanNumber,
+          text: text.trim(),
+          delay: 1200, // Simulação humanizada de digitação
+          linkPreview: false,
+        }),
+      });
+
+      const data = await res.json();
+      if (res.ok && data?.key?.id) {
+        return {
+          success: true,
+          messageId: data.key.id,
+        };
+      }
+
+      return {
+        success: false,
+        error: data?.response?.message || data?.message || `Erro HTTP ${res.status} ao enviar mensagem.`,
+      };
+    } catch (err: any) {
+      return {
+        success: false,
+        error: err?.message || 'Falha de conexão ao enviar mensagem via Evolution API.',
+      };
+    }
+  }
+}
+
+export const evolutionClient = new EvolutionClient();

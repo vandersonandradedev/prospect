@@ -73,6 +73,134 @@
   ],
   "leads": [
     {
+      "id": "lead-1793383720502-e4so8",
+      "name": "MOB Hamburgueria",
+      "legalName": null,
+      "cnpj": null,
+      "category": "fast_food",
+      "productId": "prod-mesago",
+      "productName": "MesaGo",
+      "address": "Rua Pires da Mota, Liberdade",
+      "city": "São Paulo",
+      "state": "SP",
+      "latitude": -23.5705622,
+      "longitude": -46.638659,
+      "phone": null,
+      "website": null,
+      "email": null,
+      "rating": null,
+      "reviewsCount": null,
+      "source": "OPENSTREETMAP_OVERPASS",
+      "sourceUrl": "https://www.openstreetmap.org/node/7140814448",
+      "sourceExternalId": "osm-node-7140814448",
+      "dataConfidence": "LOW",
+      "verificationStatus": "UNVERIFIED",
+      "pipelineStage": "NEW",
+      "priority": "LOW",
+      "score": 10,
+      "scoreFactors": [
+        "Segmento comercial compatível (+10)",
+        "Telefone comercial ausente na consulta original (0)"
+      ],
+      "firstCollectedAt": "2026-10-30T18:08:40.502Z",
+      "lastVerifiedAt": "2026-10-30T18:08:40.502Z",
+      "notes": null,
+      "evidences": [
+        {
+          "id": "ev-1793383720502-1",
+          "category": "ORIGEM_VERIFICADA",
+          "description": "Empresa identificada em consulta na base OPENSTREETMAP_OVERPASS.",
+          "evidenceUrl": "https://www.openstreetmap.org/node/7140814448",
+          "detectedAt": "2026-10-30T18:08:40.502Z"
+        }
+      ],
+      "activities": [
+        {
+          "id": "act-1793383720502-1",
+          "leadId": "lead-1793383720502-e4so8",
+          "type": "STATUS_UPDATE",
+          "title": "Lead Ingerido",
+          "description": "Lead cadastrado na base de prospecção via OPENSTREETMAP_OVERPASS.",
+          "createdAt": "2026-10-30T18:08:40.502Z",
+          "operatorName": "Sistema"
+        }
+      ],
+      "stageHistory": [
+        {
+          "id": "sh-1793383720503-1",
+          "fromStage": "NEW",
+          "toStage": "NEW",
+          "reason": "Criação inicial do lead",
+          "changedAt": "2026-10-30T18:08:40.503Z"
+        }
+      ],
+      "aiAnalysis": null
+    },
+    {
+      "id": "lead-1793383720503-iue6v",
+      "name": "Looks Hamburgueria",
+      "legalName": null,
+      "cnpj": null,
+      "category": "burger",
+      "productId": "prod-mesago",
+      "productName": "MesaGo",
+      "address": "Rua Tutóia, Moema",
+      "city": "São Paulo",
+      "state": "SP",
+      "latitude": -23.5806489,
+      "longitude": -46.6503959,
+      "phone": null,
+      "website": null,
+      "email": null,
+      "rating": null,
+      "reviewsCount": null,
+      "source": "OPENSTREETMAP_OVERPASS",
+      "sourceUrl": "https://www.openstreetmap.org/node/5448845424",
+      "sourceExternalId": "osm-node-5448845424",
+      "dataConfidence": "LOW",
+      "verificationStatus": "UNVERIFIED",
+      "pipelineStage": "NEW",
+      "priority": "LOW",
+      "score": 30,
+      "scoreFactors": [
+        "Segmento de alimentação altamente aderente ao MesaGo (+30)",
+        "Telefone comercial ausente na consulta original (0)"
+      ],
+      "firstCollectedAt": "2026-10-30T18:08:40.503Z",
+      "lastVerifiedAt": "2026-10-30T18:08:40.503Z",
+      "notes": null,
+      "evidences": [
+        {
+          "id": "ev-1793383720503-1",
+          "category": "ORIGEM_VERIFICADA",
+          "description": "Empresa identificada em consulta na base OPENSTREETMAP_OVERPASS.",
+          "evidenceUrl": "https://www.openstreetmap.org/node/5448845424",
+          "detectedAt": "2026-10-30T18:08:40.503Z"
+        }
+      ],
+      "activities": [
+        {
+          "id": "act-1793383720503-1",
+          "leadId": "lead-1793383720503-iue6v",
+          "type": "STATUS_UPDATE",
+          "title": "Lead Ingerido",
+          "description": "Lead cadastrado na base de prospecção via OPENSTREETMAP_OVERPASS.",
+          "createdAt": "2026-10-30T18:08:40.503Z",
+          "operatorName": "Sistema"
+        }
+      ],
+      "stageHistory": [
+        {
+          "id": "sh-1793383720503-1",
+          "fromStage": "NEW",
+          "toStage": "NEW",
+          "reason": "Criação inicial do lead",
+          "changedAt": "2026-10-30T18:08:40.503Z"
+        }
+      ],
+      "aiAnalysis": null
+    },
+    {
       "id": "lead-1793046889811-r67v6",
       "name": "Oficina Mecânica do DEQ",
       "legalName": null,
@@ -103,7 +231,7 @@
         "Telefone comercial ausente na consulta original (0)"
       ],
       "firstCollectedAt": "2026-10-26T20:34:49.811Z",
-      "lastVerifiedAt": "2026-10-26T20:36:12.305Z",
+      "lastVerifiedAt": "2026-10-30T18:09:26.445Z",
       "notes": null,
       "evidences": [
         {
@@ -167,7 +295,7 @@
         "Telefone comercial público disponível para contato (+30)"
       ],
       "firstCollectedAt": "2026-10-26T20:34:49.811Z",
-      "lastVerifiedAt": "2026-10-26T20:36:12.305Z",
+      "lastVerifiedAt": "2026-10-30T18:09:26.445Z",
       "notes": null,
       "evidences": [
         {
@@ -231,7 +359,7 @@
         "Telefone comercial público disponível para contato (+30)"
       ],
       "firstCollectedAt": "2026-10-26T20:34:49.811Z",
-      "lastVerifiedAt": "2026-10-26T20:36:12.305Z",
+      "lastVerifiedAt": "2026-10-30T18:09:26.445Z",
       "notes": null,
       "evidences": [
         {
@@ -295,7 +423,7 @@
         "Telefone comercial ausente na consulta original (0)"
       ],
       "firstCollectedAt": "2026-10-26T20:20:54.951Z",
-      "lastVerifiedAt": "2026-10-26T20:36:12.249Z",
+      "lastVerifiedAt": "2026-10-30T18:08:40.502Z",
       "notes": null,
       "evidences": [
         {
@@ -359,7 +487,7 @@
         "Telefone comercial público disponível para contato (+30)"
       ],
       "firstCollectedAt": "2026-10-26T20:20:54.951Z",
-      "lastVerifiedAt": "2026-10-26T20:36:12.249Z",
+      "lastVerifiedAt": "2026-10-30T18:08:40.502Z",
       "notes": null,
       "evidences": [
         {
@@ -489,7 +617,7 @@
         "Possui presença digital / site próprio (+20)"
       ],
       "firstCollectedAt": "2026-10-26T20:20:54.951Z",
-      "lastVerifiedAt": "2026-10-26T20:36:12.249Z",
+      "lastVerifiedAt": "2026-10-30T18:08:40.502Z",
       "notes": null,
       "evidences": [
         {
@@ -588,6 +716,38 @@
     }
   ],
   "jobs": [
+    {
+      "id": "job-1793383720519-7tco",
+      "provider": "OPENSTREETMAP_OVERPASS",
+      "searchQuery": "Oficina Mecânica em Campinas, SP",
+      "targetProduct": "TorqueOS",
+      "targetCategory": "Oficina Mecânica",
+      "targetCity": "Campinas",
+      "targetState": "SP",
+      "maxResults": 5,
+      "status": "COMPLETED",
+      "itemsFound": 3,
+      "itemsImported": 0,
+      "startedAt": "2026-10-30T18:08:40.519Z",
+      "warningMessage": "Provedor GMAPS_SCRAPER_KIT sem dados. Busca realizada via OpenStreetMap.",
+      "finishedAt": "2026-10-30T18:09:26.449Z"
+    },
+    {
+      "id": "job-1793383719672-9ele",
+      "provider": "OPENSTREETMAP_OVERPASS",
+      "searchQuery": "Hamburgueria em São Paulo, SP",
+      "targetProduct": "MesaGo",
+      "targetCategory": "Hamburgueria",
+      "targetCity": "São Paulo",
+      "targetState": "SP",
+      "maxResults": 5,
+      "status": "COMPLETED",
+      "itemsFound": 5,
+      "itemsImported": 2,
+      "startedAt": "2026-10-30T18:08:39.672Z",
+      "warningMessage": null,
+      "finishedAt": "2026-10-30T18:08:40.515Z"
+    },
     {
       "id": "job-1793046972257-tlfy",
       "provider": "OPENSTREETMAP_OVERPASS",
@@ -717,6 +877,13 @@
   ],
   "suppressionList": [
     {
+      "id": "sup-1793383719507",
+      "identifier": "(11) 94444-3333",
+      "type": "PHONE",
+      "reason": "Solicitou exclusão",
+      "suppressedAt": "2026-10-30T18:08:39.507Z"
+    },
+    {
       "id": "sup-1793046972048",
       "identifier": "(11) 94444-3333",
       "type": "PHONE",
@@ -760,6 +927,45 @@
     }
   ],
   "auditLogs": [
+    {
+      "id": "log-1793383766449-exd4h",
+      "action": "COLLECTION_JOB_COMPLETED",
+      "resource": "JOB",
+      "resourceId": "job-1793383720519-7tco",
+      "details": "Job job-1793383720519-7tco concluído. Encontrados: 3, Novos leads importados: 0, Atualizados: 0",
+      "timestamp": "2026-10-30T18:09:26.449Z"
+    },
+    {
+      "id": "log-1793383720519-bf1g5",
+      "action": "COLLECTION_JOB_STARTED",
+      "resource": "JOB",
+      "resourceId": "job-1793383720519-7tco",
+      "details": "Iniciado job job-1793383720519-7tco para Oficina Mecânica em Campinas-SP",
+      "timestamp": "2026-10-30T18:08:40.519Z"
+    },
+    {
+      "id": "log-1793383720516-zq70a",
+      "action": "COLLECTION_JOB_COMPLETED",
+      "resource": "JOB",
+      "resourceId": "job-1793383719672-9ele",
+      "details": "Job job-1793383719672-9ele concluído. Encontrados: 5, Novos leads importados: 2, Atualizados: 0",
+      "timestamp": "2026-10-30T18:08:40.516Z"
+    },
+    {
+      "id": "log-1793383719673-fdr02",
+      "action": "COLLECTION_JOB_STARTED",
+      "resource": "JOB",
+      "resourceId": "job-1793383719672-9ele",
+      "details": "Iniciado job job-1793383719672-9ele para Hamburgueria em São Paulo-SP",
+      "timestamp": "2026-10-30T18:08:39.673Z"
+    },
+    {
+      "id": "log-1793383719507",
+      "action": "SUPPRESSION_ADDED",
+      "resource": "SUPPRESSION",
+      "details": "PHONE: (11) 94444-3333 adicionado à lista de supressão. Motivo: Solicitou exclusão",
+      "timestamp": "2026-10-30T18:08:39.507Z"
+    },
     {
       "id": "log-1793046972311-dr7pv",
       "action": "COLLECTION_JOB_COMPLETED",

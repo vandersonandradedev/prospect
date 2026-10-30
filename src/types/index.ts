@@ -14,6 +14,14 @@ export type PipelineStage =
 
 export type PriorityLevel = 'HIGH' | 'MEDIUM' | 'LOW' | 'INSUFFICIENT_DATA';
 
+export type AutomationStatus =
+  | 'IDLE'
+  | 'CONTACTING'
+  | 'WAITING_REPLY'
+  | 'ENGAGED'
+  | 'HANDED_OFF_TO_HUMAN'
+  | 'OPT_OUT';
+
 export type DataConfidence = 'HIGH' | 'MEDIUM' | 'LOW';
 
 export type VerificationStatus =
@@ -139,6 +147,11 @@ export interface BusinessLead {
   activities: LeadActivity[];
   stageHistory: LeadStageHistory[];
   aiAnalysis?: AiAnalysisResult | null;
+  automationPaused?: boolean;
+  automationStatus?: AutomationStatus;
+  whatsappChatId?: string | null;
+  lastOutboundMessageAt?: string | null;
+  lastInboundMessageAt?: string | null;
 }
 
 export interface CollectionJob {
@@ -183,6 +196,15 @@ export interface SearchParams {
   state: string;
   maxResults?: number;
   provider?: LeadSource;
+}
+
+export interface EvolutionSettings {
+  serverUrl: string;
+  apiKey: string;
+  instanceName: string;
+  autoOutreachEnabled: boolean;
+  autoReplyEnabled: boolean;
+  webhookUrl?: string;
 }
 
 export interface DashboardMetrics {

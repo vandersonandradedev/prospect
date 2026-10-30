@@ -11,22 +11,26 @@ import {
   Filter,
   RefreshCw,
   Plus,
+  UserCheck,
+  Bot,
+  Zap,
+  MessageSquare,
 } from 'lucide-react';
 import { BusinessLead, PipelineStage } from '@/types';
 
-const STAGES: Array<{ id: PipelineStage; label: string; headerColor: string }> = [
+const STAGES: Array<{ id: PipelineStage; label: string; headerColor: string; isHumanStage?: boolean }> = [
   { id: 'NEW', label: '1. Novos Leads', headerColor: 'border-slate-400 text-slate-700' },
   { id: 'VALIDATING', label: '2. Em Validação', headerColor: 'border-blue-400 text-blue-700' },
   { id: 'QUALIFIED', label: '3. Qualificados', headerColor: 'border-emerald-400 text-emerald-700' },
   { id: 'READY_TO_CONTACT', label: '4. Prontos Contato', headerColor: 'border-indigo-400 text-indigo-700' },
-  { id: 'CONTACTED', label: '5. Contatados', headerColor: 'border-amber-400 text-amber-700' },
-  { id: 'RESPONDED', label: '6. Responderam', headerColor: 'border-cyan-400 text-cyan-700' },
-  { id: 'DEMO_SCHEDULED', label: '7. Demo Agendada', headerColor: 'border-purple-400 text-purple-700' },
+  { id: 'CONTACTED', label: '5. Contatados (SDR IA)', headerColor: 'border-amber-400 text-amber-700' },
+  { id: 'RESPONDED', label: '6. Responderam (SDR IA)', headerColor: 'border-cyan-400 text-cyan-700' },
+  { id: 'DEMO_SCHEDULED', label: '7. Demo Agendada (Humano)', headerColor: 'border-purple-600 bg-purple-50 text-purple-900', isHumanStage: true },
   { id: 'PROPOSAL_SENT', label: '8. Proposta Enviada', headerColor: 'border-orange-400 text-orange-700' },
   { id: 'NEGOTIATING', label: '9. Em Negociação', headerColor: 'border-yellow-500 text-yellow-800' },
   { id: 'CONVERTED', label: '10. Convertidos', headerColor: 'border-emerald-600 text-emerald-800 font-bold' },
   { id: 'LOST', label: '11. Perdidos', headerColor: 'border-rose-400 text-rose-700' },
-  { id: 'DO_NOT_CONTACT', label: '12. Não Contatar', headerColor: 'border-red-600 text-red-800' },
+  { id: 'DO_NOT_CONTACT', label: '12. Não Contatar (LGPD)', headerColor: 'border-red-600 text-red-800' },
 ];
 
 export default function CrmKanbanPage() {
@@ -120,11 +124,21 @@ export default function CrmKanbanPage() {
                 className="w-72 bg-slate-100/80 border border-slate-200/80 rounded-xl flex flex-col h-full shadow-sm"
               >
                 {/* Stage Header */}
-                <div className={`p-3 border-b-2 bg-white rounded-t-xl flex items-center justify-between ${stg.headerColor}`}>
-                  <span className="font-bold text-xs">{stg.label}</span>
-                  <span className="px-2 py-0.5 rounded-full text-[11px] font-bold bg-slate-100 text-slate-700">
-                    {loading ? '…' : stageLeads.length}
-                  </span>
+                <div className={`p-3 border-b-2 bg-white rounded-t-xl flex flex-col gap-1 ${stg.headerColor}`}>
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-xs flex items-center gap-1.5">
+                      {stg.isHumanStage && <UserCheck className="w-3.5 h-3.5 text-purple-600" />}
+                      {stg.label}
+                    </span>
+                    <span className="px-2 py-0.5 rounded-full text-[11px] font-bold bg-slate-100 text-slate-700">
+                      {loading ? '…' : stageLeads.length}
+                    </span>
+                  </div>
+                  {stg.isHumanStage && (
+                    <div className="text-[10px] text-purple-700 font-semibold bg-purple-100/70 px-2 py-0.5 rounded">
+                      👤 Bastão Humano (Vanderson) • Automação Pausada
+                    </div>
+                  )}
                 </div>
 
                 {/* Stage Cards */}
@@ -135,12 +149,16 @@ export default function CrmKanbanPage() {
                       <div className="h-20 bg-white/50 rounded-lg border border-slate-200" />
                     </div>
                   ) : stageLeads.length === 0 ? (
-                    <div className="text-center py-8 text-[11px] text-slate-400">Nenhum lead nesta etapa</div>
+                    <div className="text-center py-8 text-[11px] text-slate-400">
+                      0 Nenhum lead nesta etapa
+                    </div>
                   ) : (
                     stageLeads.map((lead) => (
                       <div
                         key={lead.id}
-                        className="bg-white p-3 rounded-lg border border-slate-200/90 shadow-sm hover:shadow transition-shadow space-y-2"
+                        className={`bg-white p-3 rounded-lg border shadow-sm hover:shadow transition-shadow space-y-2 ${
+                          stg.isHumanStage ? 'border-purple-300 ring-1 ring-purple-100' : 'border-slate-200/90'
+                        }`}
                       >
                         <div className="flex items-start justify-between gap-1">
                           <Link
@@ -155,6 +173,23 @@ export default function CrmKanbanPage() {
                         </div>
 
                         <div className="text-[11px] text-slate-500 line-clamp-1">{lead.category}</div>
+
+                        {/* Badges de Automação */}
+                        <div className="flex flex-wrap gap-1">
+                          {lead.automationPaused ? (
+                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-purple-100 text-purple-800">
+                              <UserCheck className="w-2.5 h-2.5" /> Atendimento Humano
+                            </span>
+                          ) : lead.pipelineStage === 'CONTACTED' ? (
+                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-semibold bg-amber-50 text-amber-700">
+                              <Bot className="w-2.5 h-2.5" /> SDR Aguardando
+                            </span>
+                          ) : lead.pipelineStage === 'RESPONDED' ? (
+                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-semibold bg-cyan-50 text-cyan-700">
+                              <MessageSquare className="w-2.5 h-2.5" /> SDR Engajado
+                            </span>
+                          ) : null}
+                        </div>
 
                         <div className="flex items-center justify-between text-[11px] text-slate-400 pt-1 border-t border-slate-50">
                           <span>{lead.city}</span>

@@ -11,6 +11,11 @@ import {
   AlertCircle,
   RefreshCw,
   Lock,
+  MessageSquare,
+  QrCode,
+  Zap,
+  Send,
+  Smartphone,
 } from 'lucide-react';
 import { SuppressionEntry } from '@/types';
 
@@ -18,6 +23,13 @@ export default function SettingsPage() {
   const [sources, setSources] = useState<any[]>([]);
   const [suppressionList, setSuppressionList] = useState<SuppressionEntry[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Evolution API State
+  const [evolutionStatus, setEvolutionStatus] = useState<any>(null);
+  const [connectingEvolution, setConnectingEvolution] = useState(false);
+  const [testPhone, setTestPhone] = useState('');
+  const [sendingTest, setSendingTest] = useState(false);
+  const [testResult, setTestResult] = useState<string | null>(null);
 
   // Formulário de Supressão
   const [identifier, setIdentifier] = useState('');
@@ -28,15 +40,18 @@ export default function SettingsPage() {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const [srcRes, supRes] = await Promise.all([
+      const [srcRes, supRes, evoRes] = await Promise.all([
         fetch('/api/sources/health'),
         fetch('/api/suppression'),
+        fetch('/api/evolution/status').catch(() => null),
       ]);
       const srcData = await srcRes.json();
       const supData = await supRes.json();
+      const evoData = evoRes ? await evoRes.json().catch(() => null) : null;
 
       if (srcData.sources) setSources(srcData.sources);
       if (supData.suppressionList) setSuppressionList(supData.suppressionList);
+      if (evoData) setEvolutionStatus(evoData);
     } catch (e) {
       console.error(e);
     } finally {
@@ -68,6 +83,51 @@ export default function SettingsPage() {
       console.error(e);
     } finally {
       setAdding(false);
+    }
+  };
+
+  const handleConnectEvolution = async () => {
+    setConnectingEvolution(true);
+    try {
+      const res = await fetch('/api/evolution/connect', { method: 'POST' });
+      const data = await res.json();
+      if (data) {
+        setEvolutionStatus((prev: any) => ({ ...prev, ...data }));
+        fetchData();
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setConnectingEvolution(false);
+    }
+  };
+
+  const handleSendTestWhatsApp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!testPhone) return;
+    setSendingTest(true);
+    setTestResult(null);
+
+    try {
+      const res = await fetch('/api/evolution/test-send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          phone: testPhone,
+          text: 'Olá! Mensagem de teste da Vision Solutions via Evolution API (SDR Autônomo). Conexão estabelecida com sucesso!',
+        }),
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setTestResult('✅ Mensagem enviada com sucesso no WhatsApp!');
+        setTestPhone('');
+      } else {
+        setTestResult(`❌ Erro: ${data.error || 'Falha ao enviar'}`);
+      }
+    } catch (err: any) {
+      setTestResult(`❌ Erro de conexão: ${err?.message}`);
+    } finally {
+      setSendingTest(false);
     }
   };
 
@@ -131,7 +191,153 @@ export default function SettingsPage() {
         </div>
       </div>
 
-      {/* 2. Lista de Supressão e Descadastramento (LGPD) */}
+      {/* 2. WhatsApp & Evolution API (SDR Autônomo) */}
+      <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div>
+            <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
+              <MessageSquare className="w-4 h-4 text-emerald-600" />
+              WhatsApp & Evolution API (SDR Autônomo)
+            </h2>
+            <p className="text-xs text-slate-500 mt-1">
+              Conexão oficial via WhatsApp Baileys para disparo imediato pós-busca e qualificação com IA.
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            <span
+              className={`px-2.5 py-1 rounded text-xs font-bold ${
+                evolutionStatus?.state === 'open'
+                  ? 'bg-emerald-100 text-emerald-800'
+                  : evolutionStatus?.available
+                  ? 'bg-amber-100 text-amber-800'
+                  : 'bg-rose-100 text-rose-800'
+              }`}
+            >
+              {evolutionStatus?.state === 'open'
+                ? 'WHATSAPP CONECTADO'
+                : evolutionStatus?.available
+                ? 'AGUARDANDO LEITURA DO QR CODE'
+                : 'EVOLUTION API OFFLINE'}
+            </span>
+          </div>
+        </div>
+
+        {/* Detalhes de Conexão */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-50 p-5 rounded-xl border border-slate-200">
+          <div className="space-y-4">
+            <div>
+              <div className="text-xs font-bold text-slate-700">Instância Configurada</div>
+              <div className="text-sm font-mono text-slate-900 font-semibold mt-0.5">
+                {evolutionStatus?.config?.instanceName || 'VisionSolutions'}
+              </div>
+            </div>
+
+            <div>
+              <div className="text-xs font-bold text-slate-700">Servidor Evolution API</div>
+              <div className="text-xs font-mono text-slate-600 mt-0.5">
+                {evolutionStatus?.config?.serverUrl || 'http://localhost:8082'}
+              </div>
+            </div>
+
+            <div>
+              <div className="text-xs font-bold text-slate-700">Webhook de Respostas Automáticas</div>
+              <div className="text-xs font-mono text-slate-600 mt-0.5 bg-white p-2 rounded border border-slate-200 break-all">
+                /api/webhooks/evolution
+              </div>
+              <p className="text-[11px] text-slate-500 mt-1">
+                Todas as mensagens recebidas de leads são processadas pelo SDR IA até a etapa 7 (Demo Agendada).
+              </p>
+            </div>
+
+            <div className="pt-2">
+              <button
+                type="button"
+                onClick={handleConnectEvolution}
+                disabled={connectingEvolution}
+                className="flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition-colors disabled:opacity-50 shadow-sm"
+              >
+                <QrCode className="w-4 h-4" />
+                {connectingEvolution ? 'Gerando QR Code...' : 'Gerar / Atualizar QR Code'}
+              </button>
+            </div>
+          </div>
+
+          {/* QR Code ou Status Conectado */}
+          <div className="flex flex-col items-center justify-center p-4 bg-white rounded-xl border border-slate-200">
+            {evolutionStatus?.state === 'open' ? (
+              <div className="text-center space-y-2">
+                <div className="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center mx-auto text-emerald-600">
+                  <CheckCircle2 className="w-8 h-8" />
+                </div>
+                <div className="font-bold text-sm text-slate-900">WhatsApp Conectado e Operacional</div>
+                <p className="text-xs text-slate-500 max-w-xs">
+                  O SDR autônomo está pronto para realizar disparos para MesaGo e TorqueOS e responder dúvidas.
+                </p>
+              </div>
+            ) : evolutionStatus?.qrCodeBase64 ? (
+              <div className="text-center space-y-3">
+                <div className="text-xs font-bold text-slate-800">
+                  Escaneie com o WhatsApp no seu celular:
+                </div>
+                <img
+                  src={
+                    evolutionStatus.qrCodeBase64.startsWith('data:')
+                      ? evolutionStatus.qrCodeBase64
+                      : `data:image/png;base64,${evolutionStatus.qrCodeBase64}`
+                  }
+                  alt="WhatsApp QR Code"
+                  className="w-56 h-56 mx-auto border-4 border-slate-900 rounded-lg shadow-sm"
+                />
+                {evolutionStatus?.pairingCode && (
+                  <div className="text-xs text-slate-600">
+                    Ou código de pareamento: <strong className="font-mono">{evolutionStatus.pairingCode}</strong>
+                  </div>
+                )}
+                <div className="text-[11px] text-slate-400">
+                  Abra WhatsApp &gt; Aparelhos conectados &gt; Conectar aparelho
+                </div>
+              </div>
+            ) : (
+              <div className="text-center space-y-2 text-slate-400 py-6">
+                <Smartphone className="w-10 h-10 mx-auto stroke-1" />
+                <div className="text-xs font-semibold">Nenhum QR Code ativo no momento.</div>
+                <div className="text-[11px]">Clique em "Gerar QR Code" para conectar seu WhatsApp.</div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Teste Rápido de Envio de Mensagem */}
+        <form onSubmit={handleSendTestWhatsApp} className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3 text-xs">
+          <div className="font-bold text-slate-800 flex items-center gap-1.5">
+            <Send className="w-3.5 h-3.5 text-sky-600" />
+            Testar Envio Real pelo WhatsApp Conectado
+          </div>
+          <div className="flex gap-2">
+            <input
+              type="text"
+              placeholder="Digite seu número com DDD (ex: 11988887777)"
+              value={testPhone}
+              onChange={(e) => setTestPhone(e.target.value)}
+              className="flex-1 px-3 py-2 border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-sky-500/20"
+            />
+            <button
+              type="submit"
+              disabled={sendingTest || !testPhone}
+              className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-lg transition-colors disabled:opacity-50"
+            >
+              {sendingTest ? 'Enviando...' : 'Enviar Teste'}
+            </button>
+          </div>
+          {testResult && (
+            <div className="text-xs font-semibold text-slate-700 bg-white p-2 rounded border border-slate-200">
+              {testResult}
+            </div>
+          )}
+        </form>
+      </div>
+
+      {/* 3. Lista de Supressão e Descadastramento (LGPD) */}
       <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm space-y-6">
         <div>
           <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2 text-rose-700">

@@ -7,3 +7,41 @@ services:
     restart: unless-stopped
     environment:
       - PORT=8080
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: evolution-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: evolution
+      POSTGRES_USER: evolution
+      POSTGRES_PASSWORD: evolution_password_2026
+    volumes:
+      - evolution_postgres_data:/var/lib/postgresql/data
+
+  evolution-api:
+    image: evoapicloud/evolution-api:latest
+    container_name: evolution-api
+    ports:
+      - "8082:8082"
+    restart: unless-stopped
+    depends_on:
+      - postgres
+    environment:
+      - SERVER_PORT=8082
+      - SERVER_TYPE=http
+      - AUTHENTICATION_API_KEY=vision_evolution_secret_key_2026
+      - CONFIG_SESSION_PHONE_CLIENT=Vision Solutions B2B
+      - DATABASE_PROVIDER=postgresql
+      - DATABASE_CONNECTION_URI=postgresql://evolution:evolution_password_2026@postgres:5432/evolution?schema=public
+      - DATABASE_CONNECTION_CLIENT_NAME=evolution_v2
+      - DELAY_IGNORE_GROUPS=true
+      - WEBHOOK_GLOBAL_ENABLED=false
+    volumes:
+      - evolution_instances:/evolution/instances
+      - evolution_store:/evolution/store
+
+volumes:
+  evolution_instances:
+  evolution_store:
+  evolution_postgres_data:

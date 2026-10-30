@@ -13,6 +13,9 @@ import {
   ExternalLink,
   Loader2,
   Layers,
+  Zap,
+  MessageSquare,
+  Bot,
 } from 'lucide-react';
 import { Product, LeadSource } from '@/types';
 import { INITIAL_PRODUCTS } from '@/lib/constants/products';
@@ -32,6 +35,7 @@ export default function SearchPage() {
   const [loadingCities, setLoadingCities] = useState<boolean>(false);
   const [maxResults, setMaxResults] = useState<number>(20);
   const [provider, setProvider] = useState<LeadSource>('GOOGLE_PLACES_API');
+  const [autoContact, setAutoContact] = useState<boolean>(true);
 
   const [sourcesHealth, setSourcesHealth] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -126,6 +130,7 @@ export default function SearchPage() {
           state,
           maxResults,
           provider,
+          autoContact,
         }),
       });
 
@@ -327,6 +332,27 @@ export default function SearchPage() {
             </div>
           </div>
 
+          {/* 5. Automação SDR: Disparo Imediato via WhatsApp */}
+          <div className="p-4 bg-sky-50/70 border border-sky-100 rounded-xl space-y-2">
+            <label className="flex items-start gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={autoContact}
+                onChange={(e) => setAutoContact(e.target.checked)}
+                className="mt-1 w-4 h-4 text-sky-600 rounded border-slate-300 focus:ring-sky-500"
+              />
+              <div>
+                <div className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
+                  <Zap className="w-3.5 h-3.5 text-sky-600 fill-sky-600" />
+                  Disparo Automático de WhatsApp pelo SDR IA (Evolution API)
+                </div>
+                <p className="text-[11px] text-slate-600 mt-0.5">
+                  Para novos leads de <strong>MesaGo</strong> e <strong>TorqueOS</strong>, o sistema formula a abordagem consultiva com IA e dispara mensagem via WhatsApp imediatamente após a coleta.
+                </p>
+              </div>
+            </label>
+          </div>
+
           {/* Botão de Disparo */}
           <div className="pt-2">
             <button
@@ -416,7 +442,7 @@ export default function SearchPage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-3 gap-3 bg-white/80 p-4 rounded-lg border border-emerald-100 text-slate-800 text-sm">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-white/80 p-4 rounded-lg border border-emerald-100 text-slate-800 text-sm">
             <div>
               <div className="text-xs text-slate-500 font-medium">Encontrados na Fonte</div>
               <div className="text-xl font-bold text-slate-900">{result.itemsFound}</div>
@@ -426,8 +452,14 @@ export default function SearchPage() {
               <div className="text-xl font-bold text-emerald-600">+{result.newCount}</div>
             </div>
             <div>
-              <div className="text-xs text-slate-500 font-medium">Leads Já Existentes Atualizados</div>
+              <div className="text-xs text-slate-500 font-medium">Leads Atualizados</div>
               <div className="text-xl font-bold text-sky-600">{result.updatedCount}</div>
+            </div>
+            <div>
+              <div className="text-xs text-slate-500 font-medium">Disparos WhatsApp IA</div>
+              <div className="text-xl font-bold text-violet-600">
+                {result.autoContactedCount > 0 ? `+${result.autoContactedCount}` : '0'}
+              </div>
             </div>
           </div>
 
