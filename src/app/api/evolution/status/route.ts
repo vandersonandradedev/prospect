@@ -24,7 +24,7 @@ export async function GET(req: NextRequest) {
     let qrCodeBase64: string | undefined;
     let pairingCode: string | undefined;
 
-    if (instanceStatus.state !== 'open') {
+    if (instanceStatus.exists && instanceStatus.state !== 'open') {
       const connectData = await evolutionClient.getConnectQrCode();
       qrCodeBase64 = connectData.qrCodeBase64;
       pairingCode = connectData.pairingCode;

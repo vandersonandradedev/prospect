@@ -152,6 +152,7 @@ export class EvolutionClient {
     state: string;
     qrCodeBase64?: string;
     pairingCode?: string;
+    code?: string;
   }> {
     try {
       const res = await fetch(`${this.config.serverUrl}/instance/connect/${instanceName}`, {
@@ -163,13 +164,54 @@ export class EvolutionClient {
       }
 
       const data = await res.json();
+      const qrCode = data?.base64 || data?.qrcode?.base64;
       return {
-        state: data?.instance?.state || data?.state || 'close',
-        qrCodeBase64: data?.base64 || data?.qrcode?.base64,
+        state: data?.instance?.state || data?.state || (qrCode ? 'connecting' : 'close'),
+        qrCodeBase64: qrCode,
         pairingCode: data?.pairingCode || data?.qrcode?.pairingCode,
+        code: data?.code || data?.qrcode?.code,
       };
     } catch {
       return { state: 'close' };
+    }
+  }
+
+  async restartInstance(instanceName = this.config.instanceName): Promise<{
+    success: boolean;
+    qrCodeBase64?: string;
+    pairingCode?: string;
+    message?: string;
+  }> {
+    try {
+      const res = await fetch(`${this.config.serverUrl}/instance/restart/${instanceName}`, {
+        method: 'POST',
+        headers: this.getHeaders(),
+      });
+
+      const data = await res.json();
+      return {
+        success: res.ok,
+        qrCodeBase64: data?.base64 || data?.qrcode?.base64,
+        pairingCode: data?.pairingCode || data?.qrcode?.pairingCode,
+        message: data?.message || data?.response?.message,
+      };
+    } catch (err: any) {
+      return {
+        success: false,
+        message: err?.message || 'Erro ao reiniciar instância na Evolution API.',
+      };
+    }
+  }
+
+  async deleteInstance(instanceName = this.config.instanceName): Promise<{ success: boolean }> {
+    try {
+      const res = await fetch(`${this.config.serverUrl}/instance/delete/${instanceName}`, {
+        method: 'DELETE',
+        headers: this.getHeaders(),
+      });
+      return { success: res.ok };
+    } catch {
+      return { success: false };
     }
   }
 

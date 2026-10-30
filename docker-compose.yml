@@ -37,6 +37,8 @@ services:
       - DATABASE_CONNECTION_CLIENT_NAME=evolution_v2
       - DELAY_IGNORE_GROUPS=true
       - WEBHOOK_GLOBAL_ENABLED=false
+      - CACHE_REDIS_ENABLED=false
+      - QRCODE_LIMIT=50
     volumes:
       - evolution_instances:/evolution/instances
       - evolution_store:/evolution/store

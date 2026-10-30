@@ -27,6 +27,7 @@ export default function SettingsPage() {
   // Evolution API State
   const [evolutionStatus, setEvolutionStatus] = useState<any>(null);
   const [connectingEvolution, setConnectingEvolution] = useState(false);
+  const [connectionError, setConnectionError] = useState<string | null>(null);
   const [testPhone, setTestPhone] = useState('');
   const [sendingTest, setSendingTest] = useState(false);
   const [testResult, setTestResult] = useState<string | null>(null);
@@ -86,21 +87,52 @@ export default function SettingsPage() {
     }
   };
 
-  const handleConnectEvolution = async () => {
+  const handleConnectEvolution = async (forceRestart = false) => {
     setConnectingEvolution(true);
+    setConnectionError(null);
     try {
-      const res = await fetch('/api/evolution/connect', { method: 'POST' });
+      const res = await fetch('/api/evolution/connect', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ forceRestart }),
+      });
       const data = await res.json();
-      if (data) {
-        setEvolutionStatus((prev: any) => ({ ...prev, ...data }));
-        fetchData();
+      if (res.ok && data.success) {
+        setEvolutionStatus((prev: any) => ({
+          ...prev,
+          available: true,
+          state: data.state || 'connecting',
+          qrCodeBase64: data.qrCodeBase64,
+          pairingCode: data.pairingCode,
+        }));
+      } else {
+        setConnectionError(data.error || data.message || 'Falha ao obter QR Code da Evolution API.');
       }
-    } catch (e) {
-      console.error(e);
+    } catch (e: any) {
+      setConnectionError(e?.message || 'Erro de rede ao conectar com Evolution API.');
     } finally {
       setConnectingEvolution(false);
     }
   };
+
+  // Polling automático suave para detectar conexão quando o usuário escanear o QR Code
+  useEffect(() => {
+    if (evolutionStatus?.state === 'open') return;
+
+    const interval = setInterval(async () => {
+      try {
+        const res = await fetch('/api/evolution/status');
+        if (res.ok) {
+          const data = await res.json();
+          if (data?.state === 'open') {
+            setEvolutionStatus((prev: any) => ({ ...prev, ...data }));
+          }
+        }
+      } catch {}
+    }, 4000);
+
+    return () => clearInterval(interval);
+  }, [evolutionStatus?.state]);
 
   const handleSendTestWhatsApp = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -249,17 +281,36 @@ export default function SettingsPage() {
               </p>
             </div>
 
-            <div className="pt-2">
+            <div className="pt-2 flex flex-wrap gap-2">
               <button
                 type="button"
-                onClick={handleConnectEvolution}
+                onClick={() => handleConnectEvolution(false)}
                 disabled={connectingEvolution}
                 className="flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition-colors disabled:opacity-50 shadow-sm"
               >
                 <QrCode className="w-4 h-4" />
                 {connectingEvolution ? 'Gerando QR Code...' : 'Gerar / Atualizar QR Code'}
               </button>
+              <button
+                type="button"
+                onClick={() => handleConnectEvolution(true)}
+                disabled={connectingEvolution}
+                className="flex items-center gap-2 px-3 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-lg text-xs font-semibold transition-colors disabled:opacity-50"
+                title="Forçar reinício da sessão Baileys na Evolution API"
+              >
+                <RefreshCw className={`w-3.5 h-3.5 ${connectingEvolution ? 'animate-spin' : ''}`} />
+                Forçar Novo QR Code
+              </button>
             </div>
+
+            {connectionError && (
+              <div className="p-3 bg-rose-50 border border-rose-200 rounded-lg text-xs text-rose-700 flex items-start gap-2">
+                <AlertCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
+                <div>
+                  <strong className="font-bold">Aviso de Conexão:</strong> {connectionError}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* QR Code ou Status Conectado */}
@@ -274,7 +325,7 @@ export default function SettingsPage() {
                   O SDR autônomo está pronto para realizar disparos para MesaGo e TorqueOS e responder dúvidas.
                 </p>
               </div>
-            ) : evolutionStatus?.qrCodeBase64 ? (
+            ) : typeof evolutionStatus?.qrCodeBase64 === 'string' && evolutionStatus.qrCodeBase64.length > 50 ? (
               <div className="text-center space-y-3">
                 <div className="text-xs font-bold text-slate-800">
                   Escaneie com o WhatsApp no seu celular:
@@ -286,22 +337,22 @@ export default function SettingsPage() {
                       : `data:image/png;base64,${evolutionStatus.qrCodeBase64}`
                   }
                   alt="WhatsApp QR Code"
-                  className="w-56 h-56 mx-auto border-4 border-slate-900 rounded-lg shadow-sm"
+                  className="w-56 h-56 mx-auto border-4 border-slate-900 rounded-lg shadow-sm bg-white"
                 />
                 {evolutionStatus?.pairingCode && (
-                  <div className="text-xs text-slate-600">
-                    Ou código de pareamento: <strong className="font-mono">{evolutionStatus.pairingCode}</strong>
+                  <div className="text-xs text-slate-600 bg-slate-50 p-1.5 rounded border border-slate-200">
+                    Ou código de pareamento: <strong className="font-mono text-slate-900">{evolutionStatus.pairingCode}</strong>
                   </div>
                 )}
-                <div className="text-[11px] text-slate-400">
+                <div className="text-[11px] text-slate-500 font-medium">
                   Abra WhatsApp &gt; Aparelhos conectados &gt; Conectar aparelho
                 </div>
               </div>
             ) : (
               <div className="text-center space-y-2 text-slate-400 py-6">
-                <Smartphone className="w-10 h-10 mx-auto stroke-1" />
-                <div className="text-xs font-semibold">Nenhum QR Code ativo no momento.</div>
-                <div className="text-[11px]">Clique em "Gerar QR Code" para conectar seu WhatsApp.</div>
+                <Smartphone className="w-10 h-10 mx-auto stroke-1 text-slate-400" />
+                <div className="text-xs font-semibold text-slate-700">Nenhum QR Code ativo no momento.</div>
+                <div className="text-[11px] text-slate-500">Clique em "Gerar / Atualizar QR Code" para conectar seu WhatsApp.</div>
               </div>
             )}
           </div>
