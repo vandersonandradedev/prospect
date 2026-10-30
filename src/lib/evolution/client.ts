@@ -7,15 +7,36 @@ export function getEvolutionConfig(): EvolutionSettings {
     stored = getStoredEvolutionConfig();
   } catch {}
 
-  let serverUrl = (
+  let rawUrl = (
     stored?.serverUrl ||
     process.env.EVOLUTION_API_URL ||
     process.env.NEXT_PUBLIC_EVOLUTION_URL ||
-    'http://localhost:8082'
-  ).trim().replace(/\/$/, '');
+    ''
+  ).trim();
 
+  const isCloudEnv = Boolean(
+    process.env.RENDER ||
+    process.env.VERCEL ||
+    process.env.NODE_ENV === 'production'
+  );
+
+  // Se a URL estiver vazia, ou for localhost/túnel temporário (.loca.lt) em ambiente de nuvem
+  if (!rawUrl || (isCloudEnv && (rawUrl.includes('localhost') || rawUrl.includes('.loca.lt')))) {
+    rawUrl = 'https://vision-evolution-api.onrender.com';
+  }
+
+  let serverUrl = rawUrl.replace(/\/$/, '');
   if (!serverUrl.startsWith('http://') && !serverUrl.startsWith('https://')) {
     serverUrl = `http://${serverUrl}`;
+  }
+
+  // Se for hostname interno do Render sem porta (ex: vision-evolution-api ou http://vision-evolution-api)
+  if (
+    serverUrl.includes('vision-evolution-api') &&
+    !serverUrl.includes(':8082') &&
+    !serverUrl.includes('.onrender.com')
+  ) {
+    serverUrl = `${serverUrl}:8082`;
   }
 
   return {
@@ -46,10 +67,14 @@ export function formatWhatsAppNumber(phone: string): string {
 }
 
 export class EvolutionClient {
-  private config: EvolutionSettings;
+  private customConfig?: Partial<EvolutionSettings>;
 
   constructor(customConfig?: Partial<EvolutionSettings>) {
-    this.config = { ...getEvolutionConfig(), ...customConfig };
+    this.customConfig = customConfig;
+  }
+
+  get config(): EvolutionSettings {
+    return { ...getEvolutionConfig(), ...this.customConfig };
   }
 
   private getHeaders() {
@@ -65,7 +90,7 @@ export class EvolutionClient {
   async checkHealth(): Promise<{ available: boolean; message: string; version?: string }> {
     try {
       const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 4000);
+      const timeout = setTimeout(() => controller.abort(), 8000);
 
       const res = await fetch(`${this.config.serverUrl}/instance/fetchInstances`, {
         headers: this.getHeaders(),
@@ -106,9 +131,14 @@ export class EvolutionClient {
     profilePictureUrl?: string;
   }> {
     try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 8000);
+
       const res = await fetch(`${this.config.serverUrl}/instance/connectionState/${instanceName}`, {
         headers: this.getHeaders(),
+        signal: controller.signal,
       });
+      clearTimeout(timeout);
 
       if (!res.ok) {
         return { exists: false, state: 'unknown' };
@@ -133,6 +163,9 @@ export class EvolutionClient {
     message?: string;
   }> {
     try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 15000);
+
       const res = await fetch(`${this.config.serverUrl}/instance/create`, {
         method: 'POST',
         headers: this.getHeaders(),
@@ -144,7 +177,9 @@ export class EvolutionClient {
           reject_call: true,
           msg_call: 'Atendimento automatizado Vision Solutions via mensagem.',
         }),
+        signal: controller.signal,
       });
+      clearTimeout(timeout);
 
       const data = await res.json();
       if (res.ok || res.status === 201) {
@@ -175,9 +210,14 @@ export class EvolutionClient {
     code?: string;
   }> {
     try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 12000);
+
       const res = await fetch(`${this.config.serverUrl}/instance/connect/${instanceName}`, {
         headers: this.getHeaders(),
+        signal: controller.signal,
       });
+      clearTimeout(timeout);
 
       if (!res.ok) {
         return { state: 'close' };
@@ -203,10 +243,15 @@ export class EvolutionClient {
     message?: string;
   }> {
     try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 15000);
+
       const res = await fetch(`${this.config.serverUrl}/instance/restart/${instanceName}`, {
         method: 'POST',
         headers: this.getHeaders(),
+        signal: controller.signal,
       });
+      clearTimeout(timeout);
 
       const data = await res.json();
       return {

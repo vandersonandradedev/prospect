@@ -313,7 +313,7 @@ export default function SettingsPage() {
               <div className="flex gap-1.5">
                 <input
                   type="text"
-                  placeholder="ex: https://sua-url.loca.lt ou http://localhost:8082"
+                  placeholder="https://vision-evolution-api.onrender.com"
                   value={customUrl}
                   onChange={(e) => setCustomUrl(e.target.value)}
                   className="flex-1 px-2.5 py-1.5 border border-slate-300 rounded-lg text-xs font-mono bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-500/20"
@@ -326,13 +326,24 @@ export default function SettingsPage() {
                   {savingUrl ? 'Salvando...' : 'Salvar URL'}
                 </button>
               </div>
+              <div className="flex items-center gap-2 pt-0.5">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setCustomUrl('https://vision-evolution-api.onrender.com');
+                  }}
+                  className="text-[10px] text-sky-600 hover:text-sky-800 underline font-medium"
+                >
+                  Definir Nuvem Render (vision-evolution-api.onrender.com)
+                </button>
+              </div>
               {saveUrlResult && (
                 <div className="text-[11px] font-medium text-slate-600 mt-1">
                   {saveUrlResult}
                 </div>
               )}
               <p className="text-[10px] text-slate-400">
-                Se o backend roda na nuvem (Render/Vercel), informe o endereço do túnel do Docker da sua máquina (ex: gerado por localtunnel na 8082).
+                Padrão recomendado: servidor conteinerizado na nuvem no Render.
               </p>
             </form>
 

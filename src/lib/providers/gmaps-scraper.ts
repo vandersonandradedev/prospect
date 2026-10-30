@@ -6,15 +6,35 @@ export class GoogleMapsScraperProvider implements BusinessProvider {
   description = 'Coletor conteinerizado com túnel para acesso seguro pelo Render/Vercel.';
 
   private getBaseUrl(): string {
-    let url = (
+    let rawUrl = (
       process.env.GMAPS_SCRAPER_API_URL ||
       process.env.NEXT_PUBLIC_GMAPS_SCRAPER_URL ||
-      'https://petite-eyes-ring.loca.lt'
-    ).trim().replace(/\/$/, '');
+      ''
+    ).trim();
 
+    const isCloudEnv = Boolean(
+      process.env.RENDER ||
+      process.env.VERCEL ||
+      process.env.NODE_ENV === 'production'
+    );
+
+    if (!rawUrl || (isCloudEnv && (rawUrl.includes('localhost') || rawUrl.includes('.loca.lt')))) {
+      rawUrl = 'https://vision-gmaps-scraper.onrender.com';
+    }
+
+    let url = rawUrl.replace(/\/$/, '');
     if (!url.startsWith('http://') && !url.startsWith('https://')) {
       url = `http://${url}`;
     }
+
+    if (
+      url.includes('vision-gmaps-scraper') &&
+      !url.includes(':8080') &&
+      !url.includes('.onrender.com')
+    ) {
+      url = `${url}:8080`;
+    }
+
     return url;
   }
 
