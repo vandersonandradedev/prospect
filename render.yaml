@@ -25,6 +25,8 @@ services:
         sync: false
       - key: CORS_ALLOWED_ORIGIN
         sync: false
+      - key: DATABASE_URL
+        sync: false
       - key: GMAPS_SCRAPER_API_URL
         fromService:
           type: web
