@@ -7,13 +7,19 @@ export function getEvolutionConfig(): EvolutionSettings {
     stored = getStoredEvolutionConfig();
   } catch {}
 
+  let serverUrl = (
+    stored?.serverUrl ||
+    process.env.EVOLUTION_API_URL ||
+    process.env.NEXT_PUBLIC_EVOLUTION_URL ||
+    'http://localhost:8082'
+  ).trim().replace(/\/$/, '');
+
+  if (!serverUrl.startsWith('http://') && !serverUrl.startsWith('https://')) {
+    serverUrl = `http://${serverUrl}`;
+  }
+
   return {
-    serverUrl: (
-      stored?.serverUrl ||
-      process.env.EVOLUTION_API_URL ||
-      process.env.NEXT_PUBLIC_EVOLUTION_URL ||
-      'http://localhost:8082'
-    ).replace(/\/$/, ''),
+    serverUrl,
     apiKey: stored?.apiKey || process.env.EVOLUTION_API_KEY || 'vision_evolution_secret_key_2026',
     instanceName: stored?.instanceName || process.env.EVOLUTION_INSTANCE_NAME || 'VisionSolutions',
     autoOutreachEnabled: process.env.AUTO_OUTREACH_ENABLED !== 'false',

@@ -6,11 +6,16 @@ export class GoogleMapsScraperProvider implements BusinessProvider {
   description = 'Coletor conteinerizado com túnel para acesso seguro pelo Render/Vercel.';
 
   private getBaseUrl(): string {
-    return (
+    let url = (
       process.env.GMAPS_SCRAPER_API_URL ||
       process.env.NEXT_PUBLIC_GMAPS_SCRAPER_URL ||
       'https://petite-eyes-ring.loca.lt'
-    ).replace(/\/$/, '');
+    ).trim().replace(/\/$/, '');
+
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+      url = `http://${url}`;
+    }
+    return url;
   }
 
   private getHeaders(extraHeaders: Record<string, string> = {}): Record<string, string> {

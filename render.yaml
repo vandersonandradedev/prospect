@@ -1,4 +1,12 @@
+databases:
+  - name: evolution-postgres
+    databaseName: evolution
+    user: evolution
+    plan: free
+    region: oregon
+
 services:
+  # 1. Backend Principal (Next.js App & API Routes)
   - type: web
     name: vision-leads-backend
     env: node
@@ -17,3 +25,63 @@ services:
         sync: false
       - key: CORS_ALLOWED_ORIGIN
         sync: false
+      - key: GMAPS_SCRAPER_API_URL
+        fromService:
+          type: web
+          name: vision-gmaps-scraper
+          property: host
+      - key: EVOLUTION_API_URL
+        fromService:
+          type: web
+          name: vision-evolution-api
+          property: host
+      - key: EVOLUTION_API_KEY
+        value: vision_evolution_secret_key_2026
+      - key: EVOLUTION_INSTANCE_NAME
+        value: VisionSolutions
+
+  # 2. Google Maps Scraper Kit (Docker Conteinerizado no Render)
+  - type: web
+    name: vision-gmaps-scraper
+    env: docker
+    dockerfilePath: ./docker/scraper/Dockerfile
+    plan: free
+    region: oregon
+    healthCheckPath: /api/v1/jobs
+    envVars:
+      - key: PORT
+        value: 8080
+
+  # 3. Evolution API v2 WhatsApp Baileys (Docker Conteinerizado no Render)
+  - type: web
+    name: vision-evolution-api
+    env: docker
+    dockerfilePath: ./docker/evolution/Dockerfile
+    plan: free
+    region: oregon
+    healthCheckPath: /
+    envVars:
+      - key: SERVER_PORT
+        value: 8082
+      - key: SERVER_TYPE
+        value: http
+      - key: AUTHENTICATION_API_KEY
+        value: vision_evolution_secret_key_2026
+      - key: CONFIG_SESSION_PHONE_CLIENT
+        value: Vision Solutions B2B
+      - key: DATABASE_PROVIDER
+        value: postgresql
+      - key: DATABASE_CONNECTION_URI
+        fromDatabase:
+          name: evolution-postgres
+          property: connectionString
+      - key: DATABASE_CONNECTION_CLIENT_NAME
+        value: evolution_v2
+      - key: DELAY_IGNORE_GROUPS
+        value: true
+      - key: WEBHOOK_GLOBAL_ENABLED
+        value: false
+      - key: CACHE_REDIS_ENABLED
+        value: false
+      - key: QRCODE_LIMIT
+        value: 50
