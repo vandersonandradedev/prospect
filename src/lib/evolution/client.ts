@@ -39,6 +39,9 @@ export class EvolutionClient {
     return {
       'Content-Type': 'application/json',
       apikey: this.config.apiKey,
+      'Bypass-Tunnel-Reminder': 'true',
+      'bypass-tunnel-reminder': '1',
+      'User-Agent': 'VisionSolutions-B2B/1.0',
     };
   }
 

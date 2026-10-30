@@ -2,37 +2,54 @@ import { BusinessProvider, ProviderHealth, RawBusinessLead } from './types';
 
 export class GoogleMapsScraperProvider implements BusinessProvider {
   id = 'GMAPS_SCRAPER_KIT' as const;
-  name = 'Google Maps Scraper Kit (Docker Local)';
-  description = 'Coletor local conteinerizado para Google Maps com extração de contatos comerciais.';
+  name = 'Google Maps Scraper Kit (Docker Local via Túnel)';
+  description = 'Coletor conteinerizado com túnel para acesso seguro pelo Render/Vercel.';
 
   private getBaseUrl(): string {
-    return process.env.GMAPS_SCRAPER_API_URL || 'http://localhost:8080';
+    return (
+      process.env.GMAPS_SCRAPER_API_URL ||
+      process.env.NEXT_PUBLIC_GMAPS_SCRAPER_URL ||
+      'https://petite-eyes-ring.loca.lt'
+    ).replace(/\/$/, '');
+  }
+
+  private getHeaders(extraHeaders: Record<string, string> = {}): Record<string, string> {
+    return {
+      'Bypass-Tunnel-Reminder': 'true',
+      'bypass-tunnel-reminder': '1',
+      'User-Agent': 'VisionSolutions-B2B/1.0',
+      ...extraHeaders,
+    };
   }
 
   async checkHealth(): Promise<ProviderHealth> {
-    const url = `${this.getBaseUrl()}/api/v1/jobs`;
+    const baseUrl = this.getBaseUrl();
+    const url = `${baseUrl}/api/v1/jobs`;
     try {
       const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 2500);
-      const res = await fetch(url, { signal: controller.signal });
+      const timeout = setTimeout(() => controller.abort(), 6500);
+      const res = await fetch(url, {
+        headers: this.getHeaders(),
+        signal: controller.signal,
+      });
       clearTimeout(timeout);
 
       if (res.ok) {
         return {
           available: true,
-          message: 'Contêiner Docker local ativo e respondendo na porta 8080.',
+          message: `Coletor Docker ativo via ${baseUrl}.`,
           isLocalService: true,
         };
       }
       return {
         available: false,
-        message: `Serviço retornou HTTP ${res.status}.`,
+        message: `Serviço retornou HTTP ${res.status} em ${baseUrl}.`,
         isLocalService: true,
       };
     } catch {
       return {
         available: false,
-        message: 'Coletor local Docker opcional (offline). Não necessário para uso na nuvem.',
+        message: `Coletor offline em ${baseUrl}. Verifique se o Docker e o túnel localtunnel estão ativos.`,
         isLocalService: true,
       };
     }
@@ -48,23 +65,33 @@ export class GoogleMapsScraperProvider implements BusinessProvider {
     const query = `${params.category} em ${params.city}, ${params.state}`;
 
     // 1. Criar Job de Scraping com o payload estritamente compatível com o coletor
-    const createRes = await fetch(`${baseUrl}/api/v1/jobs`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        name: `scrape-${params.category.substring(0, 20)}-${Date.now()}`,
-        keywords: [query],
-        lang: 'pt',
-        zoom: 15,
-        depth: 1,
-        email: true,
-        max_time: 45,
-      }),
-    });
+    const createController = new AbortController();
+    const createTimeout = setTimeout(() => createController.abort(), 12000);
+    let createRes: Response;
+    try {
+      createRes = await fetch(`${baseUrl}/api/v1/jobs`, {
+        method: 'POST',
+        headers: this.getHeaders({ 'Content-Type': 'application/json' }),
+        body: JSON.stringify({
+          name: `scrape-${params.category.substring(0, 20)}-${Date.now()}`,
+          keywords: [query],
+          lang: 'pt',
+          zoom: 15,
+          depth: 1,
+          email: true,
+          max_time: 30,
+        }),
+        signal: createController.signal,
+      });
+    } catch (err: any) {
+      throw new Error(`Tempo limite ou falha ao conectar no coletor em ${baseUrl}: ${err.message}`);
+    } finally {
+      clearTimeout(createTimeout);
+    }
 
     if (!createRes.ok) {
       throw new Error(
-        `Falha ao iniciar trabalho no Google Maps Scraper Kit: HTTP ${createRes.status}. Verifique se o Docker está ativo.`
+        `Falha ao iniciar trabalho no Google Maps Scraper Kit em ${baseUrl}: HTTP ${createRes.status}. Verifique se o túnel local está ativo.`
       );
     }
 
@@ -75,14 +102,16 @@ export class GoogleMapsScraperProvider implements BusinessProvider {
       throw new Error('Serviço local de scraping não retornou identificador de trabalho (job_id).');
     }
 
-    // 2. Polling com timeout (45s)
+    // 2. Polling com timeout (30s)
     const startTime = Date.now();
-    const maxPollTime = 45000;
+    const maxPollTime = 30000;
     let completed = false;
 
     while (Date.now() - startTime < maxPollTime) {
       await new Promise((r) => setTimeout(r, 2500));
-      const statusRes = await fetch(`${baseUrl}/api/v1/jobs/${jobId}`);
+      const statusRes = await fetch(`${baseUrl}/api/v1/jobs/${jobId}`, {
+        headers: this.getHeaders(),
+      });
       if (!statusRes.ok) continue;
 
       const statusData = await statusRes.json();
@@ -101,7 +130,9 @@ export class GoogleMapsScraperProvider implements BusinessProvider {
     }
 
     // 3. Obter Resultados (Download CSV)
-    const downloadRes = await fetch(`${baseUrl}/api/v1/jobs/${jobId}/download`);
+    const downloadRes = await fetch(`${baseUrl}/api/v1/jobs/${jobId}/download`, {
+      headers: this.getHeaders(),
+    });
     if (!downloadRes.ok) {
       throw new Error(`Falha ao obter download do trabalho: HTTP ${downloadRes.status}`);
     }

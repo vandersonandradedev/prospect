@@ -41,5 +41,5 @@ describe('Search API Route', () => {
     const data = await res.json();
     expect(res.status).toBe(200);
     expect(data.success).toBe(true);
-  }, 60000);
+  }, 90000);
 });
