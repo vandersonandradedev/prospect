@@ -95,6 +95,8 @@ services:
         value: false
       - key: DELAY_IGNORE_GROUPS
         value: true
+      - key: DEL_INSTANCE
+        value: "false"
       - key: WEBHOOK_GLOBAL_ENABLED
         value: false
       - key: CACHE_REDIS_ENABLED

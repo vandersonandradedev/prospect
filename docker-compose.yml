@@ -46,6 +46,7 @@ services:
       - DATABASE_SAVE_DATA_HISTORIC=false
       - DATABASE_SAVE_DATA_LABELS=false
       - DELAY_IGNORE_GROUPS=true
+      - DEL_INSTANCE=false
       - WEBHOOK_GLOBAL_ENABLED=false
       - CACHE_REDIS_ENABLED=false
       - QRCODE_LIMIT=50
