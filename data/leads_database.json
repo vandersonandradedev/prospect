@@ -73,6 +73,199 @@
   ],
   "leads": [
     {
+      "id": "lead-1793446944749-b0lnr",
+      "name": "Sora Burger - Hamburgueria",
+      "legalName": null,
+      "cnpj": null,
+      "category": "american;sandwich;burger",
+      "productId": "prod-mesago",
+      "productName": "MesaGo",
+      "address": "Rua Tutóia, 318, Paraíso",
+      "city": "São Paulo",
+      "state": "SP",
+      "latitude": -23.5731815,
+      "longitude": -46.6526626,
+      "phone": "(11) 99607-5496",
+      "website": "https://soraburger.com.br/",
+      "email": null,
+      "rating": null,
+      "reviewsCount": null,
+      "source": "OPENSTREETMAP_OVERPASS",
+      "sourceUrl": "https://www.openstreetmap.org/way/521412001",
+      "sourceExternalId": "osm-way-521412001",
+      "dataConfidence": "HIGH",
+      "verificationStatus": "WEBSITE_VERIFIED",
+      "pipelineStage": "NEW",
+      "priority": "HIGH",
+      "score": 80,
+      "scoreFactors": [
+        "Segmento de alimentação altamente aderente ao MesaGo (+30)",
+        "Telefone comercial público disponível para contato (+30)",
+        "Possui presença digital / site próprio (+20)"
+      ],
+      "firstCollectedAt": "2026-10-31T11:42:24.749Z",
+      "lastVerifiedAt": "2026-10-31T11:42:24.749Z",
+      "notes": null,
+      "evidences": [
+        {
+          "id": "ev-1793446944749-1",
+          "category": "ORIGEM_VERIFICADA",
+          "description": "Empresa identificada em consulta na base OPENSTREETMAP_OVERPASS.",
+          "evidenceUrl": "https://www.openstreetmap.org/way/521412001",
+          "detectedAt": "2026-10-31T11:42:24.749Z"
+        }
+      ],
+      "activities": [
+        {
+          "id": "act-1793446944749-1",
+          "leadId": "lead-1793446944749-b0lnr",
+          "type": "STATUS_UPDATE",
+          "title": "Lead Ingerido",
+          "description": "Lead cadastrado na base de prospecção via OPENSTREETMAP_OVERPASS.",
+          "createdAt": "2026-10-31T11:42:24.749Z",
+          "operatorName": "Sistema"
+        }
+      ],
+      "stageHistory": [
+        {
+          "id": "sh-1793446944749-1",
+          "fromStage": "NEW",
+          "toStage": "NEW",
+          "reason": "Criação inicial do lead",
+          "changedAt": "2026-10-31T11:42:24.749Z"
+        }
+      ],
+      "aiAnalysis": null
+    },
+    {
+      "id": "lead-1793446944749-1achn",
+      "name": "Hamburgueria Tio Robs",
+      "legalName": null,
+      "cnpj": null,
+      "category": "burger",
+      "productId": "prod-mesago",
+      "productName": "MesaGo",
+      "address": "Rua João Domingos, 118, Parelheiros",
+      "city": "São Paulo",
+      "state": "SP",
+      "latitude": -23.7940558,
+      "longitude": -46.7428327,
+      "phone": "(11) 96499-5237",
+      "website": null,
+      "email": null,
+      "rating": null,
+      "reviewsCount": null,
+      "source": "OPENSTREETMAP_OVERPASS",
+      "sourceUrl": "https://www.openstreetmap.org/node/9201232884",
+      "sourceExternalId": "osm-node-9201232884",
+      "dataConfidence": "MEDIUM",
+      "verificationStatus": "UNVERIFIED",
+      "pipelineStage": "NEW",
+      "priority": "MEDIUM",
+      "score": 60,
+      "scoreFactors": [
+        "Segmento de alimentação altamente aderente ao MesaGo (+30)",
+        "Telefone comercial público disponível para contato (+30)"
+      ],
+      "firstCollectedAt": "2026-10-31T11:42:24.749Z",
+      "lastVerifiedAt": "2026-10-31T11:42:24.749Z",
+      "notes": null,
+      "evidences": [
+        {
+          "id": "ev-1793446944749-1",
+          "category": "ORIGEM_VERIFICADA",
+          "description": "Empresa identificada em consulta na base OPENSTREETMAP_OVERPASS.",
+          "evidenceUrl": "https://www.openstreetmap.org/node/9201232884",
+          "detectedAt": "2026-10-31T11:42:24.749Z"
+        }
+      ],
+      "activities": [
+        {
+          "id": "act-1793446944749-1",
+          "leadId": "lead-1793446944749-1achn",
+          "type": "STATUS_UPDATE",
+          "title": "Lead Ingerido",
+          "description": "Lead cadastrado na base de prospecção via OPENSTREETMAP_OVERPASS.",
+          "createdAt": "2026-10-31T11:42:24.749Z",
+          "operatorName": "Sistema"
+        }
+      ],
+      "stageHistory": [
+        {
+          "id": "sh-1793446944749-1",
+          "fromStage": "NEW",
+          "toStage": "NEW",
+          "reason": "Criação inicial do lead",
+          "changedAt": "2026-10-31T11:42:24.749Z"
+        }
+      ],
+      "aiAnalysis": null
+    },
+    {
+      "id": "lead-1793446944749-p00cd",
+      "name": "Estação Leste - Pastelaria e Hamburgueria",
+      "legalName": null,
+      "cnpj": null,
+      "category": "burger;pastel;coffee;salgados;sandwich",
+      "productId": "prod-mesago",
+      "productName": "MesaGo",
+      "address": "Avenida Arquiteto Vilanova Artigas, Conjunto Habitacional Teotônio Vilela",
+      "city": "São Paulo",
+      "state": "SP",
+      "latitude": -23.6146467,
+      "longitude": -46.5019483,
+      "phone": "(11) 94443-4545",
+      "website": null,
+      "email": null,
+      "rating": null,
+      "reviewsCount": null,
+      "source": "OPENSTREETMAP_OVERPASS",
+      "sourceUrl": "https://www.openstreetmap.org/node/7307702216",
+      "sourceExternalId": "osm-node-7307702216",
+      "dataConfidence": "MEDIUM",
+      "verificationStatus": "UNVERIFIED",
+      "pipelineStage": "NEW",
+      "priority": "MEDIUM",
+      "score": 60,
+      "scoreFactors": [
+        "Segmento de alimentação altamente aderente ao MesaGo (+30)",
+        "Telefone comercial público disponível para contato (+30)"
+      ],
+      "firstCollectedAt": "2026-10-31T11:42:24.749Z",
+      "lastVerifiedAt": "2026-10-31T11:42:24.749Z",
+      "notes": null,
+      "evidences": [
+        {
+          "id": "ev-1793446944749-1",
+          "category": "ORIGEM_VERIFICADA",
+          "description": "Empresa identificada em consulta na base OPENSTREETMAP_OVERPASS.",
+          "evidenceUrl": "https://www.openstreetmap.org/node/7307702216",
+          "detectedAt": "2026-10-31T11:42:24.749Z"
+        }
+      ],
+      "activities": [
+        {
+          "id": "act-1793446944749-1",
+          "leadId": "lead-1793446944749-p00cd",
+          "type": "STATUS_UPDATE",
+          "title": "Lead Ingerido",
+          "description": "Lead cadastrado na base de prospecção via OPENSTREETMAP_OVERPASS.",
+          "createdAt": "2026-10-31T11:42:24.749Z",
+          "operatorName": "Sistema"
+        }
+      ],
+      "stageHistory": [
+        {
+          "id": "sh-1793446944749-1",
+          "fromStage": "NEW",
+          "toStage": "NEW",
+          "reason": "Criação inicial do lead",
+          "changedAt": "2026-10-31T11:42:24.749Z"
+        }
+      ],
+      "aiAnalysis": null
+    },
+    {
       "id": "lead-1793383720502-e4so8",
       "name": "MOB Hamburgueria",
       "legalName": null,
@@ -231,7 +424,7 @@
         "Telefone comercial ausente na consulta original (0)"
       ],
       "firstCollectedAt": "2026-10-26T20:34:49.811Z",
-      "lastVerifiedAt": "2026-10-30T18:09:26.445Z",
+      "lastVerifiedAt": "2026-10-31T11:42:57.470Z",
       "notes": null,
       "evidences": [
         {
@@ -295,7 +488,7 @@
         "Telefone comercial público disponível para contato (+30)"
       ],
       "firstCollectedAt": "2026-10-26T20:34:49.811Z",
-      "lastVerifiedAt": "2026-10-30T18:09:26.445Z",
+      "lastVerifiedAt": "2026-10-31T11:42:57.470Z",
       "notes": null,
       "evidences": [
         {
@@ -359,7 +552,7 @@
         "Telefone comercial público disponível para contato (+30)"
       ],
       "firstCollectedAt": "2026-10-26T20:34:49.811Z",
-      "lastVerifiedAt": "2026-10-30T18:09:26.445Z",
+      "lastVerifiedAt": "2026-10-31T11:42:57.470Z",
       "notes": null,
       "evidences": [
         {
@@ -487,7 +680,7 @@
         "Telefone comercial público disponível para contato (+30)"
       ],
       "firstCollectedAt": "2026-10-26T20:20:54.951Z",
-      "lastVerifiedAt": "2026-10-30T18:08:40.502Z",
+      "lastVerifiedAt": "2026-10-31T11:42:24.749Z",
       "notes": null,
       "evidences": [
         {
@@ -552,7 +745,7 @@
         "Possui presença digital / site próprio (+20)"
       ],
       "firstCollectedAt": "2026-10-26T20:20:54.951Z",
-      "lastVerifiedAt": "2026-10-26T20:36:12.249Z",
+      "lastVerifiedAt": "2026-10-31T11:42:24.749Z",
       "notes": null,
       "evidences": [
         {
@@ -717,6 +910,38 @@
   ],
   "jobs": [
     {
+      "id": "job-1793446945767-wooe",
+      "provider": "OPENSTREETMAP_OVERPASS",
+      "searchQuery": "Oficina Mecânica em Campinas, SP",
+      "targetProduct": "TorqueOS",
+      "targetCategory": "Oficina Mecânica",
+      "targetCity": "Campinas",
+      "targetState": "SP",
+      "maxResults": 5,
+      "status": "COMPLETED",
+      "itemsFound": 3,
+      "itemsImported": 0,
+      "startedAt": "2026-10-31T11:42:25.767Z",
+      "warningMessage": "Provedor GMAPS_SCRAPER_KIT sem dados. Busca realizada via OpenStreetMap.",
+      "finishedAt": "2026-10-31T11:42:57.477Z"
+    },
+    {
+      "id": "job-1793446943872-wh2q",
+      "provider": "OPENSTREETMAP_OVERPASS",
+      "searchQuery": "Hamburgueria em São Paulo, SP",
+      "targetProduct": "MesaGo",
+      "targetCategory": "Hamburgueria",
+      "targetCity": "São Paulo",
+      "targetState": "SP",
+      "maxResults": 5,
+      "status": "COMPLETED",
+      "itemsFound": 5,
+      "itemsImported": 3,
+      "startedAt": "2026-10-31T11:42:23.872Z",
+      "warningMessage": null,
+      "finishedAt": "2026-10-31T11:42:25.764Z"
+    },
+    {
       "id": "job-1793383720519-7tco",
       "provider": "OPENSTREETMAP_OVERPASS",
       "searchQuery": "Oficina Mecânica em Campinas, SP",
@@ -877,6 +1102,13 @@
   ],
   "suppressionList": [
     {
+      "id": "sup-1793446943716",
+      "identifier": "(11) 94444-3333",
+      "type": "PHONE",
+      "reason": "Solicitou exclusão",
+      "suppressedAt": "2026-10-31T11:42:23.716Z"
+    },
+    {
       "id": "sup-1793383719507",
       "identifier": "(11) 94444-3333",
       "type": "PHONE",
@@ -927,6 +1159,45 @@
     }
   ],
   "auditLogs": [
+    {
+      "id": "log-1793446977477-5v30h",
+      "action": "COLLECTION_JOB_COMPLETED",
+      "resource": "JOB",
+      "resourceId": "job-1793446945767-wooe",
+      "details": "Job job-1793446945767-wooe concluído. Encontrados: 3, Novos leads importados: 0, Atualizados: 0",
+      "timestamp": "2026-10-31T11:42:57.477Z"
+    },
+    {
+      "id": "log-1793446945768-bgclf",
+      "action": "COLLECTION_JOB_STARTED",
+      "resource": "JOB",
+      "resourceId": "job-1793446945767-wooe",
+      "details": "Iniciado job job-1793446945767-wooe para Oficina Mecânica em Campinas-SP",
+      "timestamp": "2026-10-31T11:42:25.768Z"
+    },
+    {
+      "id": "log-1793446945765-wekk3",
+      "action": "COLLECTION_JOB_COMPLETED",
+      "resource": "JOB",
+      "resourceId": "job-1793446943872-wh2q",
+      "details": "Job job-1793446943872-wh2q concluído. Encontrados: 5, Novos leads importados: 3, Atualizados: 0",
+      "timestamp": "2026-10-31T11:42:25.765Z"
+    },
+    {
+      "id": "log-1793446943908-352k5",
+      "action": "COLLECTION_JOB_STARTED",
+      "resource": "JOB",
+      "resourceId": "job-1793446943872-wh2q",
+      "details": "Iniciado job job-1793446943872-wh2q para Hamburgueria em São Paulo-SP",
+      "timestamp": "2026-10-31T11:42:23.908Z"
+    },
+    {
+      "id": "log-1793446943716",
+      "action": "SUPPRESSION_ADDED",
+      "resource": "SUPPRESSION",
+      "details": "PHONE: (11) 94444-3333 adicionado à lista de supressão. Motivo: Solicitou exclusão",
+      "timestamp": "2026-10-31T11:42:23.716Z"
+    },
     {
       "id": "log-1793383766449-exd4h",
       "action": "COLLECTION_JOB_COMPLETED",
