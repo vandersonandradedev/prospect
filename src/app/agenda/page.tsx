@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import {
   Clock,
@@ -10,22 +10,13 @@ import {
   Building2,
   RefreshCw,
   ChevronRight,
+  Radio,
 } from 'lucide-react';
-import { BusinessLead, LeadActivity } from '@/types';
+import { LeadActivity } from '@/types';
+import { useRealtimeLeads } from '@/hooks/useRealtime';
 
 export default function AgendaPage() {
-  const [leads, setLeads] = useState<BusinessLead[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetch('/api/leads')
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.leads) setLeads(data.leads);
-      })
-      .catch((e) => console.error(e))
-      .finally(() => setLoading(false));
-  }, []);
+  const { leads, loading, isLive, refresh } = useRealtimeLeads();
 
   // Agregar todas as atividades
   const allActivities: Array<LeadActivity & { leadName: string; leadProduct: string }> = [];
@@ -57,14 +48,33 @@ export default function AgendaPage() {
 
   return (
     <div className="p-8 space-y-6 max-w-5xl mx-auto w-full">
-      <div>
-        <h1 className="text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
-          <Clock className="w-6 h-6 text-sky-600" />
-          Histórico e Linha do Tempo Comercial
-        </h1>
-        <p className="text-sm text-slate-500 mt-1">
-          Registro cronológico auditável de todas as interações e avanços do funil realizados pelo operador.
-        </p>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
+            <Clock className="w-6 h-6 text-sky-600" />
+            Histórico e Linha do Tempo Comercial
+          </h1>
+          <p className="text-sm text-slate-500 mt-1">
+            Registro cronológico auditável de todas as interações e avanços do funil realizados pelo operador.
+          </p>
+        </div>
+        <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-xs">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            </span>
+            <span>Histórico Ao Vivo</span>
+          </div>
+          <button
+            onClick={refresh}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors shadow-sm"
+            title="Atualizar histórico"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
+            Atualizar
+          </button>
+        </div>
       </div>
 
       <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">

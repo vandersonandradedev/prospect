@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import {
@@ -23,16 +23,17 @@ import {
   ExternalLink,
   ChevronRight,
   FileText,
+  Radio,
 } from 'lucide-react';
 import { BusinessLead, PipelineStage, PriorityLevel } from '@/types';
+import { useRealtimeLead } from '@/hooks/useRealtime';
 
 export default function LeadDetailPage() {
   const params = useParams();
   const router = useRouter();
   const leadId = params.id as string;
 
-  const [lead, setLead] = useState<BusinessLead | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { lead, setLead, loading, isLive, refresh } = useRealtimeLead(leadId);
   const [enriching, setEnriching] = useState(false);
   const [analyzingAi, setAnalyzingAi] = useState(false);
 
@@ -42,23 +43,9 @@ export default function LeadDetailPage() {
   const [activityDesc, setActivityDesc] = useState('');
   const [submittingAct, setSubmittingAct] = useState(false);
 
-  const fetchLead = async () => {
-    try {
-      const res = await fetch(`/api/leads/${leadId}`);
-      const data = await res.json();
-      if (data.success) {
-        setLead(data.lead);
-      }
-    } catch (e) {
-      console.error('Erro ao carregar lead:', e);
-    } finally {
-      setLoading(false);
-    }
+  const fetchLead = () => {
+    refresh();
   };
-
-  useEffect(() => {
-    fetchLead();
-  }, [leadId]);
 
   const handleStageChange = async (newStage: PipelineStage) => {
     if (!lead) return;
@@ -209,14 +196,33 @@ export default function LeadDetailPage() {
           Voltar para Base de Leads
         </Link>
 
-        {/* Supressão LGPD */}
-        <button
-          onClick={handleSuppress}
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-rose-700 hover:text-rose-800 bg-rose-50 border border-rose-200 px-3 py-1.5 rounded-lg"
-        >
-          <ShieldAlert className="w-3.5 h-3.5 text-rose-600" />
-          Lista de Supressão (Opt-out LGPD)
-        </button>
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-xs">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            </span>
+            <span>Lead em Tempo Real</span>
+          </div>
+
+          <button
+            onClick={refresh}
+            className="inline-flex items-center gap-1 text-xs font-medium text-slate-700 bg-white border border-slate-200 px-2.5 py-1.5 rounded-lg shadow-sm hover:bg-slate-50"
+            title="Atualizar detalhes do lead"
+          >
+            <RefreshCw className="w-3.5 h-3.5" />
+            Atualizar
+          </button>
+
+          {/* Supressão LGPD */}
+          <button
+            onClick={handleSuppress}
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-rose-700 hover:text-rose-800 bg-rose-50 border border-rose-200 px-3 py-1.5 rounded-lg"
+          >
+            <ShieldAlert className="w-3.5 h-3.5 text-rose-600" />
+            Lista de Supressão (Opt-out LGPD)
+          </button>
+        </div>
       </div>
 
       {/* Header Principal da Empresa */}

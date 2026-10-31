@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import {
   Radio,
@@ -12,30 +12,10 @@ import {
   AlertTriangle,
   ArrowRight,
 } from 'lucide-react';
-import { CollectionJob } from '@/types';
+import { useRealtimeJobs } from '@/hooks/useRealtime';
 
 export default function JobsPage() {
-  const [jobs, setJobs] = useState<CollectionJob[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  const fetchJobs = async () => {
-    setLoading(true);
-    try {
-      const res = await fetch('/api/jobs');
-      const data = await res.json();
-      if (data.success) {
-        setJobs(data.jobs);
-      }
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchJobs();
-  }, []);
+  const { jobs, loading, isLive, refresh } = useRealtimeJobs();
 
   const getStatusBadge = (status: string) => {
     switch (status) {
@@ -86,19 +66,28 @@ export default function JobsPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2.5">
+          <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-xs">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            </span>
+            <span>Coleta Ao Vivo</span>
+          </div>
+
           <button
-            onClick={fetchJobs}
-            className="p-2 text-slate-500 hover:text-slate-800 border border-slate-200 rounded-lg bg-white hover:bg-slate-50"
-            title="Atualizar lista"
+            onClick={refresh}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors shadow-sm"
+            title="Atualizar lista de jobs"
           >
-            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+            <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
+            Atualizar
           </button>
           <Link
             href="/busca"
-            className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-sky-600 rounded-lg hover:bg-sky-700 shadow-sm"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold text-white bg-sky-600 rounded-lg hover:bg-sky-700 shadow-sm"
           >
-            <Search className="w-4 h-4" />
+            <Search className="w-3.5 h-3.5" />
             Nova Pesquisa
           </Link>
         </div>

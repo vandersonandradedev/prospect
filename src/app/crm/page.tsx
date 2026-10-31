@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import {
   Kanban,
@@ -15,8 +15,10 @@ import {
   Bot,
   Zap,
   MessageSquare,
+  Radio,
 } from 'lucide-react';
 import { BusinessLead, PipelineStage } from '@/types';
+import { useRealtimeLeads } from '@/hooks/useRealtime';
 
 const STAGES: Array<{ id: PipelineStage; label: string; headerColor: string; isHumanStage?: boolean }> = [
   { id: 'NEW', label: '1. Novos Leads', headerColor: 'border-slate-400 text-slate-700' },
@@ -34,46 +36,13 @@ const STAGES: Array<{ id: PipelineStage; label: string; headerColor: string; isH
 ];
 
 export default function CrmKanbanPage() {
-  const [leads, setLeads] = useState<BusinessLead[]>([]);
-  const [loading, setLoading] = useState(true);
   const [selectedProduct, setSelectedProduct] = useState('');
+  const { leads, loading, isLive, refresh, moveStage } = useRealtimeLeads({
+    productId: selectedProduct,
+  });
 
-  const fetchLeads = async () => {
-    setLoading(true);
-    try {
-      const params = new URLSearchParams();
-      if (selectedProduct) params.set('productId', selectedProduct);
-
-      const res = await fetch(`/api/leads?${params.toString()}`);
-      const data = await res.json();
-      if (data.success) {
-        setLeads(data.leads);
-      }
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchLeads();
-  }, [selectedProduct]);
-
-  const handleMoveStage = async (leadId: string, newStage: PipelineStage) => {
-    try {
-      const res = await fetch(`/api/leads/${leadId}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ pipelineStage: newStage }),
-      });
-      const data = await res.json();
-      if (data.success) {
-        setLeads((prev) => prev.map((l) => (l.id === leadId ? data.lead : l)));
-      }
-    } catch (e) {
-      console.error('Falha ao mover lead:', e);
-    }
+  const handleMoveStage = (leadId: string, newStage: PipelineStage) => {
+    moveStage(leadId, newStage);
   };
 
   return (
@@ -90,7 +59,15 @@ export default function CrmKanbanPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-xs">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            </span>
+            <span>Kanban Ao Vivo</span>
+          </div>
+
           <select
             value={selectedProduct}
             onChange={(e) => setSelectedProduct(e.target.value)}
@@ -103,7 +80,7 @@ export default function CrmKanbanPage() {
           </select>
 
           <button
-            onClick={fetchLeads}
+            onClick={refresh}
             className="p-1.5 text-slate-500 hover:text-slate-800 border border-slate-200 rounded-lg hover:bg-slate-50"
             title="Atualizar Kanban"
           >

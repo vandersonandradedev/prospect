@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import {
   Building2,
@@ -14,31 +14,12 @@ import {
   Flame,
   ShieldCheck,
   RefreshCw,
+  Radio,
 } from 'lucide-react';
-import { DashboardMetrics } from '@/types';
+import { useRealtimeDashboard } from '@/hooks/useRealtime';
 
 export default function DashboardPage() {
-  const [metrics, setMetrics] = useState<DashboardMetrics | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  const fetchMetrics = async () => {
-    setLoading(true);
-    try {
-      const res = await fetch('/api/dashboard');
-      const data = await res.json();
-      if (data.success) {
-        setMetrics(data.metrics);
-      }
-    } catch (e) {
-      console.error('Falha ao carregar métricas:', e);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchMetrics();
-  }, []);
+  const { metrics, loading, isLive, lastSync, refresh } = useRealtimeDashboard();
 
   return (
     <div className="p-8 space-y-8 max-w-7xl mx-auto w-full">
@@ -52,19 +33,27 @@ export default function DashboardPage() {
             Métricas de prospecção calculadas estritamente a partir de dados reais persistidos.
           </p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-xs">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            </span>
+            <span>Ao Vivo • Tempo Real</span>
+          </div>
           <button
-            onClick={fetchMetrics}
-            className="flex items-center gap-2 px-3.5 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors shadow-sm"
+            onClick={refresh}
+            className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors shadow-sm"
+            title="Forçar sincronização manual"
           >
-            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+            <RefreshCw className="w-3.5 h-3.5" />
             Atualizar
           </button>
           <Link
             href="/busca"
-            className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-sky-600 rounded-lg hover:bg-sky-700 transition-colors shadow-sm shadow-sky-600/20"
+            className="flex items-center gap-2 px-3.5 py-1.5 text-xs font-semibold text-white bg-sky-600 rounded-lg hover:bg-sky-700 transition-colors shadow-sm shadow-sky-600/20"
           >
-            <Search className="w-4 h-4" />
+            <Search className="w-3.5 h-3.5" />
             Nova Pesquisa
           </Link>
         </div>

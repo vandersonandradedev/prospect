@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import {
   Building2,
@@ -14,44 +14,25 @@ import {
   Flame,
   ShieldCheck,
   RefreshCw,
+  Radio,
 } from 'lucide-react';
 import { BusinessLead, PipelineStage, PriorityLevel } from '@/types';
+import { useRealtimeLeads } from '@/hooks/useRealtime';
 
 export default function LeadsPage() {
-  const [leads, setLeads] = useState<BusinessLead[]>([]);
-  const [loading, setLoading] = useState(true);
-
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedProduct, setSelectedProduct] = useState('');
   const [selectedStage, setSelectedStage] = useState('');
 
-  const fetchLeads = async () => {
-    setLoading(true);
-    try {
-      const params = new URLSearchParams();
-      if (selectedProduct) params.set('productId', selectedProduct);
-      if (selectedStage) params.set('stage', selectedStage);
-      if (searchTerm) params.set('search', searchTerm);
-
-      const res = await fetch(`/api/leads?${params.toString()}`);
-      const data = await res.json();
-      if (data.success) {
-        setLeads(data.leads);
-      }
-    } catch (e) {
-      console.error('Falha ao buscar leads:', e);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchLeads();
-  }, [selectedProduct, selectedStage]);
+  const { leads, loading, isLive, refresh } = useRealtimeLeads({
+    productId: selectedProduct,
+    stage: selectedStage,
+    search: searchTerm,
+  });
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    fetchLeads();
+    refresh();
   };
 
   const getPriorityBadge = (priority: PriorityLevel) => {
@@ -101,20 +82,37 @@ export default function LeadsPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2.5">
+          <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-xs">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            </span>
+            <span>Lista Ao Vivo</span>
+          </div>
+
+          <button
+            onClick={refresh}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors shadow-sm"
+            title="Atualizar lista de leads"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
+            Atualizar
+          </button>
+
           <a
             href="/api/export"
             download
-            className="flex items-center gap-2 px-3.5 py-2 text-sm font-semibold text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors shadow-sm"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors shadow-sm"
           >
-            <Download className="w-4 h-4 text-slate-500" />
+            <Download className="w-3.5 h-3.5 text-slate-500" />
             Exportar CSV
           </a>
           <Link
             href="/busca"
-            className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-sky-600 rounded-lg hover:bg-sky-700 transition-colors shadow-sm shadow-sky-600/20"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold text-white bg-sky-600 rounded-lg hover:bg-sky-700 transition-colors shadow-sm shadow-sky-600/20"
           >
-            <Search className="w-4 h-4" />
+            <Search className="w-3.5 h-3.5" />
             Nova Pesquisa
           </Link>
         </div>
@@ -161,7 +159,7 @@ export default function LeadsPage() {
           </select>
 
           <button
-            onClick={fetchLeads}
+            onClick={refresh}
             className="p-2 text-slate-500 hover:text-slate-800 border border-slate-200 rounded-lg hover:bg-slate-50"
             title="Atualizar lista"
           >

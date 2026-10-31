@@ -79,6 +79,25 @@ export default function Sidebar() {
         })}
       </nav>
 
+      {/* Realtime Live Sync Status */}
+      <div className="px-3.5 py-2.5 mx-3 mb-2 rounded-xl bg-slate-800/80 border border-slate-700/60 shadow-xs">
+        <div className="flex items-center justify-between">
+          <span className="text-[10px] font-bold text-slate-300 uppercase tracking-wider">
+            Sincronização
+          </span>
+          <span className="flex items-center gap-1.5 text-[10px] font-bold text-emerald-400 bg-emerald-950/80 border border-emerald-500/30 px-2 py-0.5 rounded-full">
+            <span className="relative flex h-1.5 w-1.5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-400"></span>
+            </span>
+            Tempo Real
+          </span>
+        </div>
+        <p className="text-[10px] text-slate-400 mt-1">
+          Leads, funil e mensagens atualizados em tempo real.
+        </p>
+      </div>
+
       {/* LGPD Compliance Footer Badge */}
       <div className="p-4 border-t border-slate-800 bg-slate-950/40">
         <div className="flex items-center gap-2 text-xs text-emerald-400 font-medium">

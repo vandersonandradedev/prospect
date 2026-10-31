@@ -10,6 +10,7 @@ import {
   PipelineStage,
 } from '@/types';
 import { INITIAL_PRODUCTS } from '@/lib/constants/products';
+import { emitRealtime, RealtimeEventType } from '@/lib/events';
 
 interface DatabaseSchema {
   products: Product[];
@@ -109,7 +110,7 @@ function ensureDatabase(): DatabaseSchema {
   }
 }
 
-function saveDatabase(data: DatabaseSchema): void {
+function saveDatabase(data: DatabaseSchema, eventType?: RealtimeEventType, payload?: any): void {
   memoryDb = data;
   try {
     if (!fs.existsSync(DATA_DIR)) {
@@ -119,6 +120,11 @@ function saveDatabase(data: DatabaseSchema): void {
   } catch (err) {
     console.warn('Não foi possível persistir no disco (usando memória):', err);
   }
+
+  // Notificação de evento em tempo real para todos os clientes conectados
+  try {
+    emitRealtime(eventType || 'DASHBOARD_UPDATED', payload);
+  } catch {}
 }
 
 // LEADS
@@ -169,11 +175,12 @@ export function saveLead(lead: BusinessLead): BusinessLead {
 
   if (index >= 0) {
     db.leads[index] = lead;
+    saveDatabase(db, 'LEAD_UPDATED', lead);
   } else {
     db.leads.unshift(lead);
+    saveDatabase(db, 'LEAD_CREATED', lead);
   }
 
-  saveDatabase(db);
   return lead;
 }
 
@@ -190,7 +197,10 @@ export function updateLead(id: string, updates: Partial<BusinessLead>): Business
   };
 
   db.leads[index] = updated;
-  saveDatabase(db);
+  const eventType = updates.pipelineStage && updates.pipelineStage !== current.pipelineStage
+    ? 'STAGE_CHANGED'
+    : 'LEAD_UPDATED';
+  saveDatabase(db, eventType, updated);
   return updated;
 }
 
@@ -211,7 +221,7 @@ export function deleteLead(id: string, reason: string = 'LGPD_REQUEST'): boolean
     timestamp: new Date().toISOString(),
   });
 
-  saveDatabase(db);
+  saveDatabase(db, 'LEAD_UPDATED', { id, deleted: true });
   return true;
 }
 
@@ -236,7 +246,7 @@ export function saveJob(job: CollectionJob): CollectionJob {
   } else {
     db.jobs.unshift(job);
   }
-  saveDatabase(db);
+  saveDatabase(db, 'JOB_STARTED', job);
   return job;
 }
 
@@ -246,7 +256,10 @@ export function updateJob(id: string, updates: Partial<CollectionJob>): Collecti
   if (idx === -1) return null;
 
   db.jobs[idx] = { ...db.jobs[idx], ...updates };
-  saveDatabase(db);
+  const eventType = updates.status === 'COMPLETED' || updates.status === 'FAILED'
+    ? 'JOB_COMPLETED'
+    : 'JOB_UPDATED';
+  saveDatabase(db, eventType, db.jobs[idx]);
   return db.jobs[idx];
 }
 
