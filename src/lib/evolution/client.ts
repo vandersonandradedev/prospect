@@ -120,21 +120,71 @@ export class EvolutionClient {
     }
   }
 
+  async getResolvedInstanceName(): Promise<string> {
+    try {
+      const res = await fetch(`${this.config.serverUrl}/instance/fetchInstances`, {
+        headers: this.getHeaders(),
+      });
+      if (res.ok) {
+        const list = await res.json();
+        const instances = Array.isArray(list) ? list : list?.value || [];
+        const openInstance = instances.find((inst: any) => inst.connectionStatus === 'open');
+        if (openInstance?.name) {
+          return openInstance.name;
+        }
+      }
+    } catch {}
+    return this.config.instanceName;
+  }
+
   async getInstanceStatus(instanceName = this.config.instanceName): Promise<{
     exists: boolean;
     state: 'open' | 'connecting' | 'close' | 'unknown';
     profileName?: string;
     profilePictureUrl?: string;
+    instanceName?: string;
   }> {
     try {
+      // 1. Verifica a lista global de instâncias para auto-detectar qualquer instância conectada (ex: 'leads' ou 'VisionLeads')
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 8000);
 
-      const res = await fetch(`${this.config.serverUrl}/instance/connectionState/${instanceName}`, {
+      const listRes = await fetch(`${this.config.serverUrl}/instance/fetchInstances`, {
         headers: this.getHeaders(),
         signal: controller.signal,
       });
       clearTimeout(timeout);
+
+      if (listRes.ok) {
+        const list = await listRes.json();
+        const instances = Array.isArray(list) ? list : list?.value || [];
+        const openInstance = instances.find((inst: any) => inst.connectionStatus === 'open');
+        if (openInstance) {
+          return {
+            exists: true,
+            state: 'open',
+            profileName: openInstance.profileName,
+            profilePictureUrl: openInstance.profilePicUrl,
+            instanceName: openInstance.name,
+          };
+        }
+
+        const matchingInstance = instances.find((inst: any) => inst.name === instanceName);
+        if (matchingInstance) {
+          const state = (matchingInstance.connectionStatus || 'close').toLowerCase();
+          return {
+            exists: true,
+            state: state === 'open' ? 'open' : state === 'connecting' ? 'connecting' : 'close',
+            profileName: matchingInstance.profileName,
+            profilePictureUrl: matchingInstance.profilePicUrl,
+            instanceName: matchingInstance.name,
+          };
+        }
+      }
+
+      const res = await fetch(`${this.config.serverUrl}/instance/connectionState/${instanceName}`, {
+        headers: this.getHeaders(),
+      });
 
       if (!res.ok) {
         return { exists: false, state: 'unknown' };
@@ -327,7 +377,9 @@ export class EvolutionClient {
     text: string;
     instanceName?: string;
   }): Promise<{ success: boolean; messageId?: string; error?: string }> {
-    const { phone, text, instanceName = this.config.instanceName } = params;
+    const activeInstance = params.instanceName || (await this.getResolvedInstanceName());
+    const { phone, text } = params;
+    const instanceName = activeInstance;
     const cleanNumber = formatWhatsAppNumber(phone);
 
     if (!cleanNumber || cleanNumber.length < 10) {

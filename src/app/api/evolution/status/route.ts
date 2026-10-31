@@ -25,9 +25,11 @@ export async function GET(req: NextRequest) {
       available: true,
       message: health.message,
       state: instanceStatus.state,
+      profileName: instanceStatus.profileName,
+      profilePictureUrl: instanceStatus.profilePictureUrl,
       config: {
         serverUrl: config.serverUrl,
-        instanceName: config.instanceName,
+        instanceName: instanceStatus.instanceName || config.instanceName,
         autoOutreachEnabled: config.autoOutreachEnabled,
         autoReplyEnabled: config.autoReplyEnabled,
       },
