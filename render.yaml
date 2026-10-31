@@ -28,15 +28,9 @@ services:
       - key: DATABASE_URL
         sync: false
       - key: GMAPS_SCRAPER_API_URL
-        fromService:
-          type: web
-          name: vision-gmaps-scraper
-          property: host
+        value: https://vision-gmaps-scraper.onrender.com
       - key: EVOLUTION_API_URL
-        fromService:
-          type: web
-          name: vision-evolution-api
-          property: host
+        value: https://vision-evolution-api.onrender.com
       - key: EVOLUTION_API_KEY
         value: vision_evolution_secret_key_2026
       - key: EVOLUTION_INSTANCE_NAME

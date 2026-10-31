@@ -30,13 +30,9 @@ export function getEvolutionConfig(): EvolutionSettings {
     serverUrl = `http://${serverUrl}`;
   }
 
-  // Se for hostname interno do Render sem porta (ex: vision-evolution-api ou http://vision-evolution-api)
-  if (
-    serverUrl.includes('vision-evolution-api') &&
-    !serverUrl.includes(':8082') &&
-    !serverUrl.includes('.onrender.com')
-  ) {
-    serverUrl = `${serverUrl}:8082`;
+  // No Render Free Tier, serviços se comunicam pela URL pública HTTPS:
+  if (serverUrl.includes('vision-evolution-api') && !serverUrl.includes('.onrender.com')) {
+    serverUrl = 'https://vision-evolution-api.onrender.com';
   }
 
   return {

@@ -27,12 +27,9 @@ export class GoogleMapsScraperProvider implements BusinessProvider {
       url = `http://${url}`;
     }
 
-    if (
-      url.includes('vision-gmaps-scraper') &&
-      !url.includes(':8080') &&
-      !url.includes('.onrender.com')
-    ) {
-      url = `${url}:8080`;
+    // No Render Free Tier, comunicação ocorre pela URL pública HTTPS:
+    if (url.includes('vision-gmaps-scraper') && !url.includes('.onrender.com')) {
+      url = 'https://vision-gmaps-scraper.onrender.com';
     }
 
     return url;
