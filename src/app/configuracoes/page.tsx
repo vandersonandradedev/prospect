@@ -308,7 +308,7 @@ export default function SettingsPage() {
             <div>
               <div className="text-xs font-bold text-slate-700">Instância Configurada</div>
               <div className="text-sm font-mono text-slate-900 font-semibold mt-0.5">
-                {evolutionStatus?.config?.instanceName || 'VisionSolutions'}
+                {evolutionStatus?.config?.instanceName || 'VisionLeads'}
               </div>
             </div>
 

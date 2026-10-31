@@ -38,7 +38,7 @@ export function getEvolutionConfig(): EvolutionSettings {
   return {
     serverUrl,
     apiKey: stored?.apiKey || process.env.EVOLUTION_API_KEY || 'vision_evolution_secret_key_2026',
-    instanceName: stored?.instanceName || process.env.EVOLUTION_INSTANCE_NAME || 'VisionSolutions',
+    instanceName: stored?.instanceName || process.env.EVOLUTION_INSTANCE_NAME || 'VisionLeads',
     autoOutreachEnabled: process.env.AUTO_OUTREACH_ENABLED !== 'false',
     autoReplyEnabled: process.env.AUTO_REPLY_ENABLED !== 'false',
     webhookUrl: process.env.EVOLUTION_WEBHOOK_URL,

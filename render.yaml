@@ -34,7 +34,7 @@ services:
       - key: EVOLUTION_API_KEY
         value: vision_evolution_secret_key_2026
       - key: EVOLUTION_INSTANCE_NAME
-        value: VisionSolutions
+        value: VisionLeads
 
   # 2. Google Maps Scraper Kit (Docker Conteinerizado no Render)
   - type: web
@@ -75,6 +75,24 @@ services:
           property: connectionString
       - key: DATABASE_CONNECTION_CLIENT_NAME
         value: evolution_v2
+      - key: NODE_OPTIONS
+        value: "--max-old-space-size=380"
+      - key: CONFIG_SESSION_PHONE_SYNC_FULL_HISTORY
+        value: false
+      - key: DATABASE_SAVE_DATA_INSTANCE
+        value: true
+      - key: DATABASE_SAVE_DATA_NEW_MESSAGE
+        value: true
+      - key: DATABASE_SAVE_MESSAGE_UPDATE
+        value: true
+      - key: DATABASE_SAVE_DATA_CONTACTS
+        value: false
+      - key: DATABASE_SAVE_DATA_CHATS
+        value: false
+      - key: DATABASE_SAVE_DATA_HISTORIC
+        value: false
+      - key: DATABASE_SAVE_DATA_LABELS
+        value: false
       - key: DELAY_IGNORE_GROUPS
         value: true
       - key: WEBHOOK_GLOBAL_ENABLED
