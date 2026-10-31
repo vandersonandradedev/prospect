@@ -283,12 +283,23 @@ export function getSuppressionList(): SuppressionEntry[] {
 export function isSuppressed(identifier: string): boolean {
   if (!identifier) return false;
   const db = ensureDatabase();
-  const cleanId = identifier.replace(/\D/g, '').toLowerCase();
+  let cleanId = identifier.replace(/\D/g, '').toLowerCase();
+
+  // Normalização de telefone BR: se tem 12 ou 13 dígitos começando com 55, extrai DDD + número
+  if (cleanId.startsWith('55') && (cleanId.length === 12 || cleanId.length === 13)) {
+    cleanId = cleanId.substring(2);
+  }
 
   return db.suppressionList.some((entry) => {
-    const entryClean = entry.identifier.replace(/\D/g, '').toLowerCase();
+    let entryClean = entry.identifier.replace(/\D/g, '').toLowerCase();
+    if (entryClean.startsWith('55') && (entryClean.length === 12 || entryClean.length === 13)) {
+      entryClean = entryClean.substring(2);
+    }
+
     return (
-      (cleanId.length >= 8 && entryClean === cleanId) ||
+      (cleanId.length >= 8 &&
+        entryClean.length >= 8 &&
+        (entryClean === cleanId || cleanId.endsWith(entryClean) || entryClean.endsWith(cleanId))) ||
       entry.identifier.toLowerCase() === identifier.toLowerCase()
     );
   });
@@ -332,6 +343,31 @@ export function addSuppressionEntry(identifier: string, type: 'PHONE' | 'EMAIL' 
 
   saveDatabase(db);
   return entry;
+}
+
+export function removeSuppressionEntry(identifier: string): boolean {
+  const db = ensureDatabase();
+  const initialLength = db.suppressionList.length;
+  let cleanTarget = identifier.replace(/\D/g, '').toLowerCase();
+  if (cleanTarget.startsWith('55') && (cleanTarget.length === 12 || cleanTarget.length === 13)) {
+    cleanTarget = cleanTarget.substring(2);
+  }
+
+  db.suppressionList = db.suppressionList.filter((e) => {
+    let entryClean = e.identifier.replace(/\D/g, '').toLowerCase();
+    if (entryClean.startsWith('55') && (entryClean.length === 12 || entryClean.length === 13)) {
+      entryClean = entryClean.substring(2);
+    }
+    const matchesPhone = cleanTarget.length >= 8 && entryClean === cleanTarget;
+    const matchesExact = e.identifier.toLowerCase() === identifier.toLowerCase();
+    return !matchesPhone && !matchesExact;
+  });
+
+  const removed = db.suppressionList.length < initialLength;
+  if (removed) {
+    saveDatabase(db);
+  }
+  return removed;
 }
 
 // AUDIT LOGS

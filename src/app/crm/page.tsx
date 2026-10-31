@@ -37,9 +37,50 @@ const STAGES: Array<{ id: PipelineStage; label: string; headerColor: string; isH
 
 export default function CrmKanbanPage() {
   const [selectedProduct, setSelectedProduct] = useState('');
+  const [dispatching, setDispatching] = useState(false);
+  const [dispatchFeedback, setDispatchFeedback] = useState<string | null>(null);
+
   const { leads, loading, isLive, refresh, moveStage } = useRealtimeLeads({
     productId: selectedProduct,
   });
+
+  const currentProductName =
+    selectedProduct === 'prod-mesago'
+      ? 'MesaGo'
+      : selectedProduct === 'prod-torqueos'
+      ? 'TorqueOS'
+      : '';
+
+  const pendingNewLeadsCount = leads.filter(
+    (l) =>
+      (!selectedProduct || l.productId === selectedProduct) &&
+      l.pipelineStage === 'NEW' &&
+      Boolean(l.phone)
+  ).length;
+
+  const handleTriggerOutreach = async () => {
+    setDispatching(true);
+    setDispatchFeedback(null);
+    try {
+      const res = await fetch('/api/leads/outreach', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ productId: selectedProduct || undefined }),
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setDispatchFeedback(`✅ ${data.message}`);
+        refresh();
+      } else {
+        setDispatchFeedback(`❌ ${data.error || 'Erro ao disparar'}`);
+      }
+    } catch (err: any) {
+      setDispatchFeedback(`❌ ${err?.message}`);
+    } finally {
+      setDispatching(false);
+      setTimeout(() => setDispatchFeedback(null), 8000);
+    }
+  };
 
   const handleMoveStage = (leadId: string, newStage: PipelineStage) => {
     moveStage(leadId, newStage);
@@ -79,6 +120,18 @@ export default function CrmKanbanPage() {
             <option value="prod-fiscal">Software Fiscal</option>
           </select>
 
+          {pendingNewLeadsCount > 0 && (
+            <button
+              onClick={handleTriggerOutreach}
+              disabled={dispatching}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-sky-600 hover:bg-sky-700 text-white shadow-xs transition-colors disabled:opacity-50"
+              title="Disparar primeiro contato via WhatsApp para leads pendentes"
+            >
+              <Zap className={`w-3.5 h-3.5 fill-white ${dispatching ? 'animate-bounce' : ''}`} />
+              <span>{dispatching ? 'Disparando...' : `Disparar SDR ${currentProductName ? currentProductName + ' ' : ''}(${pendingNewLeadsCount})`}</span>
+            </button>
+          )}
+
           <button
             onClick={refresh}
             className="p-1.5 text-slate-500 hover:text-slate-800 border border-slate-200 rounded-lg hover:bg-slate-50"
@@ -88,6 +141,18 @@ export default function CrmKanbanPage() {
           </button>
         </div>
       </div>
+
+      {dispatchFeedback && (
+        <div className="text-xs px-3.5 py-2 rounded-lg bg-slate-900 text-white font-medium shadow-sm flex items-center justify-between">
+          <span>{dispatchFeedback}</span>
+          <button
+            onClick={() => setDispatchFeedback(null)}
+            className="text-slate-400 hover:text-white text-xs ml-4"
+          >
+            ✕
+          </button>
+        </div>
+      )}
 
       {/* Board Kanban Horizontal com Scroll */}
       <div className="flex-1 overflow-x-auto overflow-y-hidden pb-4">

@@ -85,6 +85,8 @@ describe('2. Deduplication & Commercial History Preservation', () => {
     expect(result.newCount).toBe(1);
     expect(result.updatedCount).toBe(0);
     expect(result.mergedLeads).toHaveLength(2);
+    expect(result.createdLeads).toHaveLength(1);
+    expect(result.createdLeads[0].productId).toBe('prod-mesago');
 
     // O lead existente manteve seu histórico e estágio
     const lead1 = result.mergedLeads.find((l) => l.id === 'lead-1');

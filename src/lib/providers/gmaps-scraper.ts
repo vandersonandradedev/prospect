@@ -100,8 +100,8 @@ export class GoogleMapsScraperProvider implements BusinessProvider {
           lang: 'pt',
           zoom: 15,
           depth: 1,
-          email: true,
-          max_time: 30,
+          email: false, // Desativado no scraper para economizar RAM do Chromium no Render Free (nosso backend já enriquece emails via fetch leve)
+          max_time: 60,
         }),
         signal: createController.signal,
       });
@@ -124,9 +124,9 @@ export class GoogleMapsScraperProvider implements BusinessProvider {
       throw new Error('Serviço local de scraping não retornou identificador de trabalho (job_id).');
     }
 
-    // 2. Polling com timeout (30s)
+    // 2. Polling com timeout ajustado (60s)
     const startTime = Date.now();
-    const maxPollTime = 30000;
+    const maxPollTime = 60000;
     let completed = false;
 
     while (Date.now() - startTime < maxPollTime) {
@@ -148,7 +148,7 @@ export class GoogleMapsScraperProvider implements BusinessProvider {
     }
 
     if (!completed) {
-      throw new Error('Tempo limite excedido aguardando resposta do coletor local (timeout 45s).');
+      throw new Error('Tempo limite excedido aguardando resposta do coletor local (timeout 60s).');
     }
 
     // 3. Obter Resultados (Download CSV)

@@ -45,6 +45,7 @@ export function deduplicateAndMerge(
   targetProductId: string
 ): {
   mergedLeads: BusinessLead[];
+  createdLeads: BusinessLead[];
   newCount: number;
   updatedCount: number;
 } {
@@ -71,6 +72,7 @@ export function deduplicateAndMerge(
 
   let newCount = 0;
   let updatedCount = 0;
+  const createdLeads: BusinessLead[] = [];
   const resultLeads = [...existingLeads];
 
   for (const raw of incomingLeads) {
@@ -193,6 +195,7 @@ export function deduplicateAndMerge(
       newLead.activities[0].leadId = newLead.id;
 
       resultLeads.unshift(newLead);
+      createdLeads.unshift(newLead);
 
       if (normPhone) {
         const cleanDigits = normPhone.replace(/\D/g, '');
@@ -211,6 +214,7 @@ export function deduplicateAndMerge(
 
   return {
     mergedLeads: resultLeads,
+    createdLeads,
     newCount,
     updatedCount,
   };

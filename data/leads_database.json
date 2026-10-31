@@ -95,7 +95,7 @@
       "sourceExternalId": "osm-way-521412001",
       "dataConfidence": "HIGH",
       "verificationStatus": "WEBSITE_VERIFIED",
-      "pipelineStage": "NEW",
+      "pipelineStage": "CONTACTED",
       "priority": "HIGH",
       "score": 80,
       "scoreFactors": [
@@ -117,6 +117,15 @@
       ],
       "activities": [
         {
+          "id": "act-1793453551246-1s3z",
+          "leadId": "lead-1793446944749-b0lnr",
+          "type": "WHATSAPP_SENT",
+          "title": "Primeiro Contato SDR Enviado (Disparo Manual/Lote)",
+          "description": "Olá! Tudo bem? Acompanhei o trabalho da Sora Burger - Hamburgueria no setor de alimentação em São Paulo.\n\nSou da equipe da Vision Solutions. Criamos o *MesaGo*, uma plataforma completa com cardápio digital próprio e gestão ágil de pedidos para delivery e salão, sem cobrar comissões abusivas sobre suas vendas.\n\nComo vocês organizam os pedidos nos horários de pico hoje? O atendimento é todo manual pelo WhatsApp ou já possuem cardápio digital próprio?",
+          "createdAt": "2026-10-31T13:32:31.246Z",
+          "operatorName": "Vision SDR IA"
+        },
+        {
           "id": "act-1793446944749-1",
           "leadId": "lead-1793446944749-b0lnr",
           "type": "STATUS_UPDATE",
@@ -128,6 +137,13 @@
       ],
       "stageHistory": [
         {
+          "id": "sh-1793453551246-512h",
+          "fromStage": "NEW",
+          "toStage": "CONTACTED",
+          "reason": "Disparo de prospecção via WhatsApp acionado no CRM",
+          "changedAt": "2026-10-31T13:32:31.246Z"
+        },
+        {
           "id": "sh-1793446944749-1",
           "fromStage": "NEW",
           "toStage": "NEW",
@@ -135,7 +151,10 @@
           "changedAt": "2026-10-31T11:42:24.749Z"
         }
       ],
-      "aiAnalysis": null
+      "aiAnalysis": null,
+      "automationStatus": "WAITING_REPLY",
+      "automationPaused": false,
+      "lastOutboundMessageAt": "2026-10-31T13:32:31.246Z"
     },
     {
       "id": "lead-1793446944749-1achn",
@@ -160,7 +179,7 @@
       "sourceExternalId": "osm-node-9201232884",
       "dataConfidence": "MEDIUM",
       "verificationStatus": "UNVERIFIED",
-      "pipelineStage": "NEW",
+      "pipelineStage": "CONTACTED",
       "priority": "MEDIUM",
       "score": 60,
       "scoreFactors": [
@@ -181,6 +200,15 @@
       ],
       "activities": [
         {
+          "id": "act-1793453551250-ugg1",
+          "leadId": "lead-1793446944749-1achn",
+          "type": "WHATSAPP_SENT",
+          "title": "Primeiro Contato SDR Enviado (Disparo Manual/Lote)",
+          "description": "Olá! Tudo bem? Acompanhei o trabalho da Hamburgueria Tio Robs no setor de alimentação em São Paulo.\n\nSou da equipe da Vision Solutions. Criamos o *MesaGo*, uma plataforma completa com cardápio digital próprio e gestão ágil de pedidos para delivery e salão, sem cobrar comissões abusivas sobre suas vendas.\n\nComo vocês organizam os pedidos nos horários de pico hoje? O atendimento é todo manual pelo WhatsApp ou já possuem cardápio digital próprio?",
+          "createdAt": "2026-10-31T13:32:31.250Z",
+          "operatorName": "Vision SDR IA"
+        },
+        {
           "id": "act-1793446944749-1",
           "leadId": "lead-1793446944749-1achn",
           "type": "STATUS_UPDATE",
@@ -192,6 +220,13 @@
       ],
       "stageHistory": [
         {
+          "id": "sh-1793453551250-4rac",
+          "fromStage": "NEW",
+          "toStage": "CONTACTED",
+          "reason": "Disparo de prospecção via WhatsApp acionado no CRM",
+          "changedAt": "2026-10-31T13:32:31.250Z"
+        },
+        {
           "id": "sh-1793446944749-1",
           "fromStage": "NEW",
           "toStage": "NEW",
@@ -199,7 +234,10 @@
           "changedAt": "2026-10-31T11:42:24.749Z"
         }
       ],
-      "aiAnalysis": null
+      "aiAnalysis": null,
+      "automationStatus": "WAITING_REPLY",
+      "automationPaused": false,
+      "lastOutboundMessageAt": "2026-10-31T13:32:31.250Z"
     },
     {
       "id": "lead-1793446944749-p00cd",
@@ -224,7 +262,7 @@
       "sourceExternalId": "osm-node-7307702216",
       "dataConfidence": "MEDIUM",
       "verificationStatus": "UNVERIFIED",
-      "pipelineStage": "NEW",
+      "pipelineStage": "CONTACTED",
       "priority": "MEDIUM",
       "score": 60,
       "scoreFactors": [
@@ -245,6 +283,15 @@
       ],
       "activities": [
         {
+          "id": "act-1793453551252-txay",
+          "leadId": "lead-1793446944749-p00cd",
+          "type": "WHATSAPP_SENT",
+          "title": "Primeiro Contato SDR Enviado (Disparo Manual/Lote)",
+          "description": "Olá! Tudo bem? Acompanhei o trabalho da Estação Leste - Pastelaria e Hamburgueria no setor de alimentação em São Paulo.\n\nSou da equipe da Vision Solutions. Criamos o *MesaGo*, uma plataforma completa com cardápio digital próprio e gestão ágil de pedidos para delivery e salão, sem cobrar comissões abusivas sobre suas vendas.\n\nComo vocês organizam os pedidos nos horários de pico hoje? O atendimento é todo manual pelo WhatsApp ou já possuem cardápio digital próprio?",
+          "createdAt": "2026-10-31T13:32:31.252Z",
+          "operatorName": "Vision SDR IA"
+        },
+        {
           "id": "act-1793446944749-1",
           "leadId": "lead-1793446944749-p00cd",
           "type": "STATUS_UPDATE",
@@ -256,6 +303,13 @@
       ],
       "stageHistory": [
         {
+          "id": "sh-1793453551252-9eux",
+          "fromStage": "NEW",
+          "toStage": "CONTACTED",
+          "reason": "Disparo de prospecção via WhatsApp acionado no CRM",
+          "changedAt": "2026-10-31T13:32:31.252Z"
+        },
+        {
           "id": "sh-1793446944749-1",
           "fromStage": "NEW",
           "toStage": "NEW",
@@ -263,7 +317,10 @@
           "changedAt": "2026-10-31T11:42:24.749Z"
         }
       ],
-      "aiAnalysis": null
+      "aiAnalysis": null,
+      "automationStatus": "WAITING_REPLY",
+      "automationPaused": false,
+      "lastOutboundMessageAt": "2026-10-31T13:32:31.252Z"
     },
     {
       "id": "lead-1793383720502-e4so8",
@@ -672,7 +729,7 @@
       "sourceExternalId": "osm-way-837272579",
       "dataConfidence": "MEDIUM",
       "verificationStatus": "UNVERIFIED",
-      "pipelineStage": "NEW",
+      "pipelineStage": "CONTACTED",
       "priority": "MEDIUM",
       "score": 60,
       "scoreFactors": [
@@ -693,6 +750,15 @@
       ],
       "activities": [
         {
+          "id": "act-1793453551253-h4bf",
+          "leadId": "lead-1793046054951-kvj0b",
+          "type": "WHATSAPP_SENT",
+          "title": "Primeiro Contato SDR Enviado (Disparo Manual/Lote)",
+          "description": "Olá! Tudo bem? Acompanhei o trabalho da Hamburgueria Corsário no setor de alimentação em São Paulo.\n\nSou da equipe da Vision Solutions. Criamos o *MesaGo*, uma plataforma completa com cardápio digital próprio e gestão ágil de pedidos para delivery e salão, sem cobrar comissões abusivas sobre suas vendas.\n\nComo vocês organizam os pedidos nos horários de pico hoje? O atendimento é todo manual pelo WhatsApp ou já possuem cardápio digital próprio?",
+          "createdAt": "2026-10-31T13:32:31.253Z",
+          "operatorName": "Vision SDR IA"
+        },
+        {
           "id": "act-1793046054951-1",
           "leadId": "lead-1793046054951-kvj0b",
           "type": "STATUS_UPDATE",
@@ -704,6 +770,13 @@
       ],
       "stageHistory": [
         {
+          "id": "sh-1793453551253-bizx",
+          "fromStage": "NEW",
+          "toStage": "CONTACTED",
+          "reason": "Disparo de prospecção via WhatsApp acionado no CRM",
+          "changedAt": "2026-10-31T13:32:31.253Z"
+        },
+        {
           "id": "sh-1793046054951-1",
           "fromStage": "NEW",
           "toStage": "NEW",
@@ -711,7 +784,10 @@
           "changedAt": "2026-10-26T20:20:54.951Z"
         }
       ],
-      "aiAnalysis": null
+      "aiAnalysis": null,
+      "automationStatus": "WAITING_REPLY",
+      "automationPaused": false,
+      "lastOutboundMessageAt": "2026-10-31T13:32:31.253Z"
     },
     {
       "id": "lead-1793046054951-zhasu",
@@ -866,7 +942,7 @@
       "sourceExternalId": "osm-node-12374914304",
       "dataConfidence": "MEDIUM",
       "verificationStatus": "UNVERIFIED",
-      "pipelineStage": "NEW",
+      "pipelineStage": "CONTACTED",
       "priority": "MEDIUM",
       "score": 60,
       "scoreFactors": [
@@ -887,6 +963,15 @@
       ],
       "activities": [
         {
+          "id": "act-1793453551253-009v",
+          "leadId": "lead-1793046054951-7eq2x",
+          "type": "WHATSAPP_SENT",
+          "title": "Primeiro Contato SDR Enviado (Disparo Manual/Lote)",
+          "description": "Olá! Tudo bem? Acompanhei o trabalho da Hamburgueria do Bebel no setor de alimentação em São Caetano do Sul.\n\nSou da equipe da Vision Solutions. Criamos o *MesaGo*, uma plataforma completa com cardápio digital próprio e gestão ágil de pedidos para delivery e salão, sem cobrar comissões abusivas sobre suas vendas.\n\nComo vocês organizam os pedidos nos horários de pico hoje? O atendimento é todo manual pelo WhatsApp ou já possuem cardápio digital próprio?",
+          "createdAt": "2026-10-31T13:32:31.253Z",
+          "operatorName": "Vision SDR IA"
+        },
+        {
           "id": "act-1793046054951-1",
           "leadId": "lead-1793046054951-7eq2x",
           "type": "STATUS_UPDATE",
@@ -898,6 +983,13 @@
       ],
       "stageHistory": [
         {
+          "id": "sh-1793453551253-wt12",
+          "fromStage": "NEW",
+          "toStage": "CONTACTED",
+          "reason": "Disparo de prospecção via WhatsApp acionado no CRM",
+          "changedAt": "2026-10-31T13:32:31.253Z"
+        },
+        {
           "id": "sh-1793046054951-1",
           "fromStage": "NEW",
           "toStage": "NEW",
@@ -905,7 +997,10 @@
           "changedAt": "2026-10-26T20:20:54.951Z"
         }
       ],
-      "aiAnalysis": null
+      "aiAnalysis": null,
+      "automationStatus": "WAITING_REPLY",
+      "automationPaused": false,
+      "lastOutboundMessageAt": "2026-10-31T13:32:31.253Z"
     }
   ],
   "jobs": [
@@ -1102,6 +1197,27 @@
   ],
   "suppressionList": [
     {
+      "id": "sup-1793453691212",
+      "identifier": "(11) 94444-3333",
+      "type": "PHONE",
+      "reason": "Solicitou exclusão",
+      "suppressedAt": "2026-10-31T13:34:51.212Z"
+    },
+    {
+      "id": "sup-1793453576891",
+      "identifier": "(11) 94444-3333",
+      "type": "PHONE",
+      "reason": "Solicitou exclusão",
+      "suppressedAt": "2026-10-31T13:32:56.891Z"
+    },
+    {
+      "id": "sup-1793453500460",
+      "identifier": "(11) 94444-3333",
+      "type": "PHONE",
+      "reason": "Solicitou exclusão",
+      "suppressedAt": "2026-10-31T13:31:40.460Z"
+    },
+    {
       "id": "sup-1793446943716",
       "identifier": "(11) 94444-3333",
       "type": "PHONE",
@@ -1159,6 +1275,144 @@
     }
   ],
   "auditLogs": [
+    {
+      "id": "log-1793453691311",
+      "action": "LEAD_DELETED_LGPD",
+      "resource": "LEAD",
+      "resourceId": "qa-lead-optout-1793453691263",
+      "details": "Lead Auto Peças Express removido definitivamente. Motivo: QA_CLEANUP",
+      "timestamp": "2026-10-31T13:34:51.311Z"
+    },
+    {
+      "id": "log-1793453691311",
+      "action": "LEAD_DELETED_LGPD",
+      "resource": "LEAD",
+      "resourceId": "qa-lead-torque-1793453691263",
+      "details": "Lead Oficina Mecânica Turbo QA removido definitivamente. Motivo: QA_CLEANUP",
+      "timestamp": "2026-10-31T13:34:51.311Z"
+    },
+    {
+      "id": "log-1793453691310",
+      "action": "LEAD_DELETED_LGPD",
+      "resource": "LEAD",
+      "resourceId": "qa-lead-mesago-1793453691262",
+      "details": "Lead Hamburgueria QA Prime removido definitivamente. Motivo: QA_CLEANUP",
+      "timestamp": "2026-10-31T13:34:51.310Z"
+    },
+    {
+      "id": "log-1793453691302",
+      "action": "SUPPRESSION_ADDED",
+      "resource": "SUPPRESSION",
+      "details": "PHONE: (11) 97766-6141 adicionado à lista de supressão. Motivo: Opt-out solicitado pelo titular: \"Não tenho interesse nenhum, favor remover meu número da base de dados de vocês.\"",
+      "timestamp": "2026-10-31T13:34:51.302Z"
+    },
+    {
+      "id": "log-1793453691297-4buko",
+      "action": "HUMAN_ATTENTION_REQUIRED",
+      "resource": "LEAD",
+      "resourceId": "qa-lead-torque-1793453691263",
+      "details": "Nova mensagem de Oficina Mecânica Turbo QA em etapa avançada (DEMO_SCHEDULED). Automação pausada para atendimento manual.",
+      "timestamp": "2026-10-31T13:34:51.297Z"
+    },
+    {
+      "id": "log-1793453691294-7kjgw",
+      "action": "DEMO_SCHEDULED",
+      "resource": "LEAD",
+      "resourceId": "qa-lead-torque-1793453691263",
+      "details": "Demonstração agendada com Oficina Mecânica Turbo QA (TorqueOS). Automação desligada para que o consultor humano assuma a demo.",
+      "timestamp": "2026-10-31T13:34:51.294Z"
+    },
+    {
+      "id": "log-1793453691281-lcpkm",
+      "action": "BATCH_OUTREACH_EXECUTED",
+      "resource": "LEAD",
+      "details": "1 mensagens disparadas em lote para novos leads pendentes.",
+      "timestamp": "2026-10-31T13:34:51.281Z"
+    },
+    {
+      "id": "log-1793453691212",
+      "action": "SUPPRESSION_ADDED",
+      "resource": "SUPPRESSION",
+      "details": "PHONE: (11) 94444-3333 adicionado à lista de supressão. Motivo: Solicitou exclusão",
+      "timestamp": "2026-10-31T13:34:51.212Z"
+    },
+    {
+      "id": "log-1793453577002",
+      "action": "SUPPRESSION_ADDED",
+      "resource": "SUPPRESSION",
+      "details": "PHONE: (11) 97766-3078 adicionado à lista de supressão. Motivo: Opt-out solicitado pelo titular: \"Não tenho interesse nenhum, favor remover meu número da base de dados de vocês.\"",
+      "timestamp": "2026-10-31T13:32:57.002Z"
+    },
+    {
+      "id": "log-1793453576971-l4xa8",
+      "action": "BATCH_OUTREACH_EXECUTED",
+      "resource": "LEAD",
+      "details": "1 mensagens disparadas em lote para novos leads pendentes.",
+      "timestamp": "2026-10-31T13:32:56.971Z"
+    },
+    {
+      "id": "log-1793453576891",
+      "action": "SUPPRESSION_ADDED",
+      "resource": "SUPPRESSION",
+      "details": "PHONE: (11) 94444-3333 adicionado à lista de supressão. Motivo: Solicitou exclusão",
+      "timestamp": "2026-10-31T13:32:56.891Z"
+    },
+    {
+      "id": "log-1793453566338",
+      "action": "SUPPRESSION_ADDED",
+      "resource": "SUPPRESSION",
+      "details": "PHONE: (11) 97766-5011 adicionado à lista de supressão. Motivo: Opt-out solicitado pelo titular: \"Não tenho interesse nenhum, favor remover meu número da base de dados de vocês.\"",
+      "timestamp": "2026-10-31T13:32:46.338Z"
+    },
+    {
+      "id": "log-1793453566320-vd3e3",
+      "action": "BATCH_OUTREACH_EXECUTED",
+      "resource": "LEAD",
+      "details": "1 mensagens disparadas em lote para novos leads pendentes.",
+      "timestamp": "2026-10-31T13:32:46.320Z"
+    },
+    {
+      "id": "log-1793453551285",
+      "action": "SUPPRESSION_ADDED",
+      "resource": "SUPPRESSION",
+      "details": "PHONE: (11) 97766-6939 adicionado à lista de supressão. Motivo: Opt-out solicitado pelo titular: \"Não tenho interesse nenhum, favor remover meu número da base de dados de vocês.\"",
+      "timestamp": "2026-10-31T13:32:31.285Z"
+    },
+    {
+      "id": "log-1793453551254-4b6am",
+      "action": "BATCH_OUTREACH_EXECUTED",
+      "resource": "LEAD",
+      "details": "6 mensagens disparadas em lote para novos leads pendentes.",
+      "timestamp": "2026-10-31T13:32:31.254Z"
+    },
+    {
+      "id": "log-1793453500542",
+      "action": "SUPPRESSION_ADDED",
+      "resource": "SUPPRESSION",
+      "details": "PHONE: (11) 97766-4621 adicionado à lista de supressão. Motivo: Opt-out solicitado pelo titular: \"Não tenho interesse nenhum, favor remover meu número da base de dados de vocês.\"",
+      "timestamp": "2026-10-31T13:31:40.542Z"
+    },
+    {
+      "id": "log-1793453500460",
+      "action": "SUPPRESSION_ADDED",
+      "resource": "SUPPRESSION",
+      "details": "PHONE: (11) 94444-3333 adicionado à lista de supressão. Motivo: Solicitou exclusão",
+      "timestamp": "2026-10-31T13:31:40.460Z"
+    },
+    {
+      "id": "log-1793452203256",
+      "action": "SUPPRESSION_ADDED",
+      "resource": "SUPPRESSION",
+      "details": "PHONE: (11) 97766-1621 adicionado à lista de supressão. Motivo: Opt-out solicitado pelo titular: \"Não tenho interesse nenhum, favor remover meu número da base de dados de vocês.\"",
+      "timestamp": "2026-10-31T13:10:03.256Z"
+    },
+    {
+      "id": "log-1793451755497",
+      "action": "SUPPRESSION_ADDED",
+      "resource": "SUPPRESSION",
+      "details": "PHONE: (11) 97766-6444 adicionado à lista de supressão. Motivo: Opt-out solicitado pelo titular: \"Não tenho interesse nenhum, favor remover meu número da base de dados de vocês.\"",
+      "timestamp": "2026-10-31T13:02:35.497Z"
+    },
     {
       "id": "log-1793446977477-5v30h",
       "action": "COLLECTION_JOB_COMPLETED",

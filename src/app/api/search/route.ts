@@ -131,7 +131,7 @@ export async function POST(req: NextRequest) {
 
     // 4. Deduplicar e Ingerir
     const currentLeads = getLeads();
-    const { mergedLeads, newCount, updatedCount } = deduplicateAndMerge(
+    const { mergedLeads, createdLeads, newCount, updatedCount } = deduplicateAndMerge(
       currentLeads,
       rawLeads,
       productId
@@ -150,9 +150,13 @@ export async function POST(req: NextRequest) {
       try {
         const evoStatus = await evolutionClient.getInstanceStatus();
         if (evoStatus.state === 'open') {
-          // Filtra novos leads que possuem telefone, não estão suprimidos e estão em NEW
-          const leadsToContact = mergedLeads.filter(
-            (l) => l.phone && l.pipelineStage === 'NEW' && !isSuppressed(l.phone)
+          // Filtra APENAS os leads recém-criados NESTA busca que pertencem estritamente ao produto alvo
+          const leadsToContact = (createdLeads || []).filter(
+            (l) =>
+              l.productId === productId &&
+              l.phone &&
+              l.pipelineStage === 'NEW' &&
+              !isSuppressed(l.phone)
           );
 
           for (const lead of leadsToContact) {
