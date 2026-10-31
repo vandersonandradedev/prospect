@@ -460,17 +460,20 @@ export default function SettingsPage() {
                       <QrCode className="w-3.5 h-3.5 text-emerald-600" />
                       Ou aponte a câmera do WhatsApp:
                     </div>
-                    <img
-                      src={
-                        evolutionStatus.qrCodeBase64.startsWith('data:')
-                          ? evolutionStatus.qrCodeBase64
-                          : `data:image/png;base64,${evolutionStatus.qrCodeBase64}`
-                      }
-                      alt="WhatsApp QR Code"
-                      className="w-52 h-52 mx-auto border-4 border-slate-900 rounded-lg shadow-sm bg-white"
-                    />
-                    <div className="text-[10px] text-slate-400 font-medium">
-                      Código sincronizado em tempo real. Escaneie imediatamente ao carregar.
+                    <div className="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm inline-block">
+                      <img
+                        src={
+                          evolutionStatus.qrCodeBase64.startsWith('data:')
+                            ? evolutionStatus.qrCodeBase64
+                            : `data:image/png;base64,${evolutionStatus.qrCodeBase64}`
+                        }
+                        alt="WhatsApp QR Code"
+                        className="w-64 h-64 mx-auto rounded-lg"
+                        style={{ imageRendering: 'pixelated' }}
+                      />
+                    </div>
+                    <div className="text-[11px] text-slate-500 font-medium">
+                      Código sincronizado em tempo real. Escaneie assim que aparecer na tela.
                     </div>
                   </div>
                 ) : (

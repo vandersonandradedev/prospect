@@ -17,14 +17,16 @@ export async function POST(req: NextRequest) {
 
     const config = getEvolutionConfig();
 
-    // 1. Se solicitou reinício forçado/limpeza de sessão, apaga e recria do zero
-    if (forceRestart) {
+    // 1. Se informou número de telefone (Pairing Code) ou solicitou reinício forçado, recria a instância de forma limpa
+    if (phoneNumber || forceRestart) {
       await evolutionClient.deleteInstance(config.instanceName).catch(() => null);
-      const createRes = await evolutionClient.createInstance(config.instanceName);
+      const createRes = await evolutionClient.createInstance(config.instanceName, phoneNumber);
       let connectRes = await evolutionClient.getConnectQrCode(config.instanceName, phoneNumber);
       return NextResponse.json({
         success: true,
-        message: 'Instância reiniciada e sessão limpa com sucesso.',
+        message: phoneNumber
+          ? 'Código de pareamento gerado com sucesso. Digite no celular.'
+          : 'Instância reiniciada e sessão limpa com sucesso.',
         qrCodeBase64: connectRes.qrCodeBase64 || createRes.qrCodeBase64,
         pairingCode: connectRes.pairingCode || createRes.pairingCode,
         state: 'connecting',

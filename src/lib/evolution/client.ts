@@ -152,7 +152,10 @@ export class EvolutionClient {
     }
   }
 
-  async createInstance(instanceName = this.config.instanceName): Promise<{
+  async createInstance(
+    instanceName = this.config.instanceName,
+    phoneNumber?: string
+  ): Promise<{
     success: boolean;
     qrCodeBase64?: string;
     pairingCode?: string;
@@ -162,13 +165,15 @@ export class EvolutionClient {
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 15000);
 
+      const formattedNumber = phoneNumber ? formatWhatsAppNumber(phoneNumber) : undefined;
       const res = await fetch(`${this.config.serverUrl}/instance/create`, {
         method: 'POST',
         headers: this.getHeaders(),
         body: JSON.stringify({
           instanceName,
           token: this.config.apiKey,
-          qrcode: true,
+          qrcode: !formattedNumber,
+          ...(formattedNumber ? { number: formattedNumber } : {}),
           integration: 'WHATSAPP-BAILEYS',
           reject_call: true,
           msg_call: 'Atendimento automatizado Vision Solutions via mensagem.',
@@ -182,7 +187,7 @@ export class EvolutionClient {
         return {
           success: true,
           qrCodeBase64: data?.qrcode?.base64 || data?.base64,
-          pairingCode: data?.qrcode?.pairingCode,
+          pairingCode: data?.qrcode?.pairingCode || data?.pairingCode,
           message: 'Instância criada com sucesso.',
         };
       }
