@@ -21,21 +21,10 @@ export async function GET(req: NextRequest) {
 
     const instanceStatus = await evolutionClient.getInstanceStatus();
 
-    let qrCodeBase64: string | undefined;
-    let pairingCode: string | undefined;
-
-    if (instanceStatus.exists && instanceStatus.state !== 'open') {
-      const connectData = await evolutionClient.getConnectQrCode();
-      qrCodeBase64 = connectData.qrCodeBase64;
-      pairingCode = connectData.pairingCode;
-    }
-
     return NextResponse.json({
       available: true,
       message: health.message,
       state: instanceStatus.state,
-      qrCodeBase64,
-      pairingCode,
       config: {
         serverUrl: config.serverUrl,
         instanceName: config.instanceName,

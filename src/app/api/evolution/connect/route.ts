@@ -18,15 +18,34 @@ export async function POST(req: NextRequest) {
     const config = getEvolutionConfig();
 
     // 1. Se informou número de telefone (Pairing Code) ou solicitou reinício forçado, recria a instância de forma limpa
-    if (phoneNumber || forceRestart) {
+    if (phoneNumber) {
+      const cleanDigits = phoneNumber.replace(/\D/g, '');
+      if (cleanDigits.length < 10) {
+        return NextResponse.json(
+          { error: 'Número de WhatsApp incompleto. Digite o número com DDD (exemplo: 11988887777).' },
+          { status: 400 }
+        );
+      }
+
       await evolutionClient.deleteInstance(config.instanceName).catch(() => null);
       const createRes = await evolutionClient.createInstance(config.instanceName, phoneNumber);
-      let connectRes = await evolutionClient.getConnectQrCode(config.instanceName, phoneNumber);
+      const connectRes = await evolutionClient.getConnectQrCode(config.instanceName, phoneNumber);
+
       return NextResponse.json({
         success: true,
-        message: phoneNumber
-          ? 'Código de pareamento gerado com sucesso. Digite no celular.'
-          : 'Instância reiniciada e sessão limpa com sucesso.',
+        message: 'Código de pareamento gerado com sucesso. Digite no celular.',
+        pairingCode: connectRes.pairingCode || createRes.pairingCode,
+        state: 'connecting',
+      });
+    }
+
+    if (forceRestart) {
+      await evolutionClient.deleteInstance(config.instanceName).catch(() => null);
+      const createRes = await evolutionClient.createInstance(config.instanceName);
+      const connectRes = await evolutionClient.getConnectQrCode(config.instanceName);
+      return NextResponse.json({
+        success: true,
+        message: 'Instância reiniciada e sessão limpa com sucesso.',
         qrCodeBase64: connectRes.qrCodeBase64 || createRes.qrCodeBase64,
         pairingCode: connectRes.pairingCode || createRes.pairingCode,
         state: 'connecting',

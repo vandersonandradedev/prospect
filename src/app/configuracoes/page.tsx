@@ -171,9 +171,9 @@ export default function SettingsPage() {
           setEvolutionStatus((prev: any) => ({
             ...prev,
             ...data,
-            // Mantém o QR Code e o Pairing Code sempre frescos
-            qrCodeBase64: data.qrCodeBase64 || prev?.qrCodeBase64,
-            pairingCode: data.pairingCode || prev?.pairingCode,
+            // Mantém o QR Code e o Pairing Code visíveis enquanto conecta
+            qrCodeBase64: data.qrCodeBase64 !== undefined ? data.qrCodeBase64 : prev?.qrCodeBase64,
+            pairingCode: data.pairingCode !== undefined ? data.pairingCode : prev?.pairingCode,
           }));
         }
       } catch {}
